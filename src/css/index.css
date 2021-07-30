@@ -1,14 +1,48 @@
+:root {
+  --white: #f7f7f7;
+  --black: #292b2c;
+  --red: #ff4444;
+  --yellow: #ffbb33;
+  --info-blue: #33b5e5;
+  --green: #00C851;
+  --primary-blue: #4285F4;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /*font-family: Arial, Helvetica, sans-serif;*/
+  font-family: "Poppins", sans-serif;
+}
+
+h1 {
+  color: #426696;
+  font-weight: 600;
+  font-size: 3rem;
+  -webkit-opacity: 0.8;
+  opacity: 0.8;
+}
+
+h2, p {
+  color: #658ec6;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+h3 {
+  color: #426696;
+  font-weight: 600;
+  opacity: 0.8;
 }
 
 main {
   height: 100vh;
-  background: linear-gradient(
-    to right top,
-    #614385, #516395
+  background-color: #000000;
+  background-image: linear-gradient(
+    147deg,
+    #000000 0%,
+    #434343 74%
   );
   display: flex;
   align-items: center;
@@ -46,13 +80,15 @@ main {
 }
 
 .circle-1 {
-  top: 5%;
-  right: 15%;
+  top: 9.9%;
+  right: 19.9%;
 }
 
 .circle-2 {
-  bottom: 5%;
-  left: 15%;
+  left: 19.9%;
+  bottom: 9%;
+  opacity: 10%;
+  -webkit-opacity: 0.1;
 }
 
 .sidebar {
@@ -61,5 +97,174 @@ main {
   align-items: center;
   justify-content: space-evenly;
   text-align: center;
+  flex: 1;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.3)
+  );
+  border-radius: 2rem;
+}
+
+.gen-token-link {
+  display: flex;
+  margin: 5rem 0rem;
+  padding: 1rem 5rem;
+  align-items: center;
+  width: 100%;
+}
+
+.gen-token-link.active {
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.3)
+  );
+}
+
+.gen-token-link:hover {
+  cursor: pointer;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.3)
+  );
+}
+
+.gen-token-link h2 {
+  font-size: 12.5pt;
+  font-weight: 600;
+  padding: 0rem 2rem;
+}
+
+.github-credits {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
   
+  height: 8rem;
+  color: var(--white);
+  border-radius: 2rem;
+  padding: 1rem;
+  margin: 1rem;
+}
+
+.github-credits > h3 {
+  -webkit-opacity: 0.95;
+  opacity: 95%;
+  width: 40%;
+  color: var(--white);
+}
+
+.github-logo {
+  opacity: 90%;
+  -webkit-opacity: 0.9;
+}
+
+.container {
+  flex: 3;
+}
+
+.status {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-gradient {
+  background-image: linear-gradient(
+    to right, #283048 0%,
+    #859398  51%, #283048  100%
+  )
+}
+
+.btn-gradient {
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;            
+  box-shadow: 0 0 20px #eee;
+}
+
+.btn-gradient:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.connect-web3-btn {
+  margin: 1rem 1rem;
+  border: none;
+  border-radius: 2rem;
+  height: 2rem;
+  width: 6.5rem;
+  font-size: 8pt;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.3)
+  );
+}
+
+.connect-web3-btn:hover {
+  cursor: pointer;
+}
+
+.connect-web3-btn > p {
+  color: gray;
+  margin-left: 0.25rem;
+  font-weight: 600;
+}
+
+.web3-status-icon {
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.25rem;
+}
+
+.deploy-token-card > div {
+
+}
+
+.top-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .glass {
+    min-height: 90vh;
+    width: 90%;
+    display: initial;
+  }
+
+  .sidebar {
+    display: none !important;
+  }
+
+  .top-nav {
+    display: flex !important;
+    height: 9vh;
+    background: linear-gradient(
+      to right bottom,
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0.3)
+    );
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass {
+    min-height: 99vh;
+    width: 99%;
+    border-radius: 0rem;
+  }
+
+  .top-nav {
+    border-radius: 0rem;
+    height: 9vh;
+  }
 }
