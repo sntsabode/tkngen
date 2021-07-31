@@ -24,15 +24,17 @@ h1 {
   opacity: 0.8;
 }
 
-h2, p {
+h2, p{
   color: #658ec6;
   font-weight: 500;
+  -webkit-opacity: 0.8;
   opacity: 0.8;
 }
 
 h3 {
   color: #426696;
   font-weight: 600;
+  -webkit-opacity: 0.8;
   opacity: 0.8;
 }
 
@@ -52,6 +54,7 @@ main {
 .glass {
   background: white;
   min-height: 80vh;
+  max-height: 95%;
   width: 60%;
   background: linear-gradient(
     to right bottom,
@@ -122,6 +125,10 @@ main {
   );
 }
 
+.gen-token-link.active > h2 {
+  color: #426696;
+}
+
 .gen-token-link:hover {
   cursor: pointer;
   background: linear-gradient(
@@ -131,17 +138,21 @@ main {
   );
 }
 
+.gen-token-link > h2:hover {
+  color: #426696;
+}
+
 .gen-token-link h2 {
   font-size: 12.5pt;
   font-weight: 600;
   padding: 0rem 2rem;
+  color: var(--black);
 }
 
 .github-credits {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  
   height: 8rem;
   color: var(--white);
   border-radius: 2rem;
@@ -168,6 +179,7 @@ main {
 .status {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .btn-gradient {
@@ -224,12 +236,92 @@ main {
   margin-right: 0.25rem;
 }
 
-.deploy-token-card > div {
-
+.main-content {
+  padding: 1rem 1rem;
 }
 
 .top-nav {
   display: none;
+}
+
+.status > div {
+  margin: 0rem 1rem;
+}
+
+.status > div > h1 {
+  font-size: 30pt;
+  color: black;
+}
+
+.status > div > p {
+  color: black;
+  font-size: 11pt;
+}
+
+.mintable-burnable-switches {
+  display: flex;
+  flex-direction: row !important;
+  justify-content: space-around;
+  margin: 4rem 0rem;
+}
+
+.deploy-token-card {
+  margin: 2rem 0rem;
+}
+
+.switch-label {
+  -webkit-opacity: 0.72;
+  opacity: 0.72;
+  font-weight: 500;
+  color: #000000;
+}
+
+.slider-comps {
+  margin-top: 6rem;
+}
+
+.deploy-token-comp {
+  display: flex;
+  flex-direction: column;
+  margin: 4rem 2rem;
+}
+
+.deploy-token-comp2 {
+  display: flex;
+  margin: 4rem 2rem;
+  justify-content: space-around;
+}
+
+.deploy-token-btn-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deploy-token-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4rem;
+  width: 12rem;
+  font-weight: 600;
+  font-size: 16pt;
+  border: none;
+  border-radius: 2rem;
+  box-shadow: 0 0 0px #eee;
+  background-image: linear-gradient(
+    to right, #283048  0%, #859398  81%, #283048 100%
+  );
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+}
+
+.deploy-token-btn:hover {
+  background-position: right center;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -266,5 +358,14 @@ main {
   .top-nav {
     border-radius: 0rem;
     height: 9vh;
+  }
+
+  .status > h1 {
+    font-size: 20pt;
+    color: black;
+  }
+  
+  .connect-web3-btn > p {
+    letter-spacing: -1px;
   }
 }
