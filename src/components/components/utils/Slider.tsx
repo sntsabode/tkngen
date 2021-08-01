@@ -28,11 +28,17 @@ const IOSSlider = withStyles({
   },
   active: {},
   valueLabel: {
+    /*background: 'linear-gradient(to right bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3) )',
+    display: 'flex',
+    width: '3rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '2rem',*/
     left: 'calc(-50% + 12px)',
     top: -22,
     '& *': {
-      background: 'transparent',
-      color: '#000'
+      color: '#000',
+      background: 'transparent'
     }
   },
   track: {
@@ -56,13 +62,18 @@ const IOSSlider = withStyles({
 })(Slider)
 
 export const SliderComp = ({
-  label, marks, defaultValue, max, restricted
+  label, marks, defaultValue,
+  max, restricted, onChange
 }: {
   label: string
   defaultValue: number
   max: number,
   restricted: boolean
   marks: { value: number, label?: string }[]
+  onChange: (
+    event: React.ChangeEvent<{}>,
+    newValue: number | number[]
+  ) => void
 }) => (
   <>
     <p className="switch-label">{label}</p>
@@ -73,6 +84,7 @@ export const SliderComp = ({
       valueLabelDisplay="on"
       step={(restricted) ? null : defaultValue / 10 }
       max={max}
+      onChange={onChange}
     />
   </>
 )
