@@ -1,171 +1,61 @@
 import React from 'react'
 import { Sidebar } from './Sidebar'
-import { GrStatusGoodSmall } from 'react-icons/gr'
-import { SwitchButton } from './components/Switch'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import { SliderComp } from './components/Slider'
-import TextField from '@material-ui/core/TextField'
-import { withStyles } from '@material-ui/core/styles'
+import { Circles } from './components/utils/Circles'
+import { MainDivHeading } from './components/MainDivHeading'
+import { IMintableBurnableSwitches } from './components/MintableBurnableSwitches'
+import { MintableBurnableSwitches } from './components/MintableBurnableSwitches'
+import { DecimalsTotalSupplySliders } from './components/DecimalsTotalSupplySliders'
 
-const Circles = () => (
-  <>
-    <div className="circle-1"></div>
-    <div className="circle-2"></div>
-  </>
-)
-
-const MainDivHeading = () => (
-  <h3 className="heading">
-    <div className="status">
-      <div>
-        <h1>Deploy ERC20</h1>
-        <p>Fill in the form to deploy your ERC20 token!</p>
-      </div>
-      <button className="connect-web3-btn">
-        <p>Connect Web3</p>
-        <GrStatusGoodSmall className="web3-status-icon" style={ {
-          color: '#ff4444'
-        } }/>
-      </button>
-    </div>
-  </h3>
-)
-
-interface IMintableBurnableSwitches {
-  mintableChecked: boolean
-  handleMintableChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  burnableChecked: boolean
-  handleBurnableChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  
+type IDeployTokenCard = IMintableBurnableSwitches & {
+  handleSliderChange: (
+    event: React.ChangeEvent<{}>,
+    which: 'Decimals' | 'TotalSupply',
+    newValue: number | number[]
+  ) => void 
 }
-
-const MintableBurnableSwitches = ({
-  mintableChecked,
-  handleMintableChange,
-  burnableChecked,
-  handleBurnableChange
-}: IMintableBurnableSwitches) => (
-  <div className="mintable-burnable-switches">
-    <Typography component="div">
-      <Grid component="label" container alignItems="center" spacing={1}>
-        <Grid item className="switch-label">Mintable</Grid>
-        <Grid item>
-          <SwitchButton
-            checked={mintableChecked}
-            onChange={handleMintableChange}
-            name="mintable-check"
-          />
-        </Grid>
-      </Grid>
-    </Typography>
-    <Typography component="div">
-      <Grid component="label" container alignItems="center" spacing={1}>
-        <Grid item>
-          <SwitchButton
-            checked={burnableChecked}
-            onChange={handleBurnableChange}
-            name="burnable-check"
-          />
-        </Grid>
-        <Grid item className="switch-label">Burnable</Grid>
-      </Grid>
-    </Typography>
-  </div>
-)
-
-type IDeployTokenCard = IMintableBurnableSwitches
-
-const DecimalsTotalSupplySliders = () => (
-  <div className="slider-comps">
-    <div className="deploy-token-comp">
-      <SliderComp
-        label="Decimals"
-        defaultValue={18}
-        max={18}
-        restricted={true}
-        marks={[
-          { value: 6 },
-          { value: 8 },
-          { value: 12 },
-          { value: 18 }
-        ]}
-      />
-    </div>
-    <div className="deploy-token-comp">
-      <SliderComp
-        label="Total Supply"
-        defaultValue={100000}
-        max={100000}
-        restricted={true}
-        marks={[
-          { value: 10000 },
-          { value: 50000 },
-          { value: 100000 },
-        ]}
-      />
-    </div>
-  </div>
-)
-
-const InputDiv = withStyles({
-  root: {
-    '& label': {
-      fontFamily: '"Poppins", sans-serif',
-      fontWeight: 500,
-      color: 'black',
-      '-webkit-opacity': 0.7,
-      opacity: 0.7
-    },
-
-    '& label.Mui-focused': {
-      color: 'black',
-      '-webkit-opacity': 0.7,
-      opacity: 0.7
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: '#3880ff',
-    } 
-  }
-})(TextField)
 
 const DeployTokenCard = ({
   mintableChecked,
-  handleMintableChange,
   burnableChecked,
-  handleBurnableChange
+  handleSwitchChange,
+  handleSliderChange
 }: IDeployTokenCard) => (
   <div className="deploy-token-card">
     <MintableBurnableSwitches
       mintableChecked={mintableChecked}
-      handleMintableChange={handleMintableChange}
       burnableChecked={burnableChecked}
-      handleBurnableChange={handleBurnableChange}
+      handleSwitchChange={handleSwitchChange}
     />
-    <div className="deploy-token-comp2">
-      <InputDiv label="Token Name"/>
-      <InputDiv label="Token Symbol"/>
-    </div>
-    <DecimalsTotalSupplySliders />
+    <DecimalsTotalSupplySliders
+      handleSliderChange={handleSliderChange}
+    />
     <div className="deploy-token-btn-div">
-      <button className="deploy-token-btn">Deploy Token!</button>
+      <button className="deploy-token-btn">NEXT</button>
     </div>
   </div>
 )
 
 const MainDiv = ({
   mintableChecked,
-  handleMintableChange,
   burnableChecked,
-  handleBurnableChange
-}: IDeployTokenCard) => (
+  handleSwitchChange,
+  handleSliderChange,
+  ERCComp,
+  BEPComp
+}: IDeployTokenCard & {
+  ERCComp: boolean
+  BEPComp: boolean
+}) => (
   <div className="main-content">
-    <MainDivHeading />
+    <MainDivHeading
+      ERCComp={ERCComp}
+      BEPComp={BEPComp}
+    />
     <DeployTokenCard 
-      handleMintableChange={handleMintableChange}
       mintableChecked={mintableChecked}
-      handleBurnableChange={handleBurnableChange}
       burnableChecked={burnableChecked}
+      handleSwitchChange={handleSwitchChange}
+      handleSliderChange={handleSliderChange}
     />
   </div>
 )
@@ -177,37 +67,38 @@ const TopNav = () => (
 )
 
 interface IAppState {
+  URL: string
   ERCComp: boolean
   BEPComp: boolean
   MintableChecked: boolean
   BurnableChecked: boolean
+  TokenName: string
+  TokenSymbol: string
+  Decimals: number
+  TotalSupply: number
+}
+
+const URLs = {
+  ERC20: {
+    Standard: 'http://localhost:9000/ERC-20/Standard'
+  },
+
+  BEP20: {
+    Standard: 'http://localhost:9000/BEP-20/Standard'
+  }
 }
 
 export class App extends React.Component<{}, IAppState> {
   state = {
+    URL: URLs.ERC20.Standard,
     ERCComp: true,
     BEPComp: false,
     MintableChecked: false,
-    BurnableChecked: true
-  }
-
-  mintableOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const next = !this.state.MintableChecked ? true : false
-    this.setState({
-      MintableChecked: next,
-      BurnableChecked: this.state.BurnableChecked
-    })
-  }
-
-  burnableOnChange = () => {
-    const next = !this.state.BurnableChecked ? true : false
-    this.setState({ BurnableChecked: next })
-  }
-
-  switchComp = (
-    which: 'ERCComp' | 'BEPComp'
-  ) => {
-    this.setState({ ...this.state, [which]: this.state[which] === false ? true : false })
+    BurnableChecked: true,
+    TokenName: '',
+    TokenSymbol: '',
+    Decimals: 18,
+    TotalSupply: 100000
   }
 
   render = () => {
@@ -216,20 +107,63 @@ export class App extends React.Component<{}, IAppState> {
       which: 'ERCComp' | 'BEPComp'
     ) => {
       event.preventDefault()
-      this.switchComp(which)
+      if (which === 'ERCComp') {
+        const bool = !this.state.ERCComp ? true : false
+        this.setState({
+          ...this.state,
+          ERCComp: bool,
+          BEPComp: !bool,
+          URL: URLs.ERC20.Standard
+        })
+      } else {
+        const bool = !this.state.BEPComp ? true : false
+        this.setState({
+          ...this.state,
+          BEPComp: bool,
+          ERCComp: !bool,
+          URL: URLs.BEP20.Standard
+        })
+      }
+    }
+
+    const handleSwitchChange = (
+      event: React.ChangeEvent<HTMLInputElement>,
+      which: 'MintableChecked' | 'BurnableChecked'
+    ) => {
+      event.preventDefault()
+      this.setState({
+        ...this.state, [which]: this.state[which] ? false : true
+      })
+    }
+
+    const handleSliderChange = (
+      event: React.ChangeEvent<{}>,
+      which: 'Decimals' | 'TotalSupply',
+      newValue: number | number[]
+    ) => {
+      event.preventDefault()
+      this.setState({
+        ...this.state, [which]: newValue
+      })
     }
 
     return (
       <main>
         <section className="glass">
-          <Sidebar activeChange={activeChange}/>
+          <Sidebar
+            activeChange={activeChange}
+            ERCComp={this.state.ERCComp}
+            BEPComp={this.state.BEPComp}
+          />
           <div className="container">
             <TopNav />
             <MainDiv
               mintableChecked={this.state.MintableChecked}
-              handleMintableChange={this.mintableOnChange}
               burnableChecked={this.state.BurnableChecked}
-              handleBurnableChange={this.burnableOnChange}
+              handleSwitchChange={handleSwitchChange}
+              handleSliderChange={handleSliderChange}
+              ERCComp={this.state.ERCComp}
+              BEPComp={this.state.BEPComp}
             />
           </div>
         </section>

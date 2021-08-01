@@ -43,10 +43,14 @@ type ActiveChangeFunc = (
 
 interface IGenTokenLinks {
   activeChange: ActiveChangeFunc
+  ERCComp: boolean
+  BEPComp: boolean
 }
 
 const GenTokenLinks = ({
-  activeChange
+  activeChange,
+  ERCComp,
+  BEPComp
 }: IGenTokenLinks) => (
   <div className="gen-token-links">
     <GenTokenLink
@@ -54,14 +58,14 @@ const GenTokenLinks = ({
       h2Data="ERC"
       activeChange={activeChange}
       which="ERCComp"
-      active="active"
+      active={ERCComp ? 'active' : ''}
     />
     <GenTokenLink
       img={BSCGenTokenLogo}
       h2Data="BEP"
       activeChange={activeChange}
       which="BEPComp"
-      active=""
+      active={BEPComp ? 'active' : ''}
     />
   </div>
 )
@@ -77,13 +81,17 @@ const GithubBadge = () => (
 )
 
 export const Sidebar = ({
-  activeChange
-}: {
-  activeChange: ActiveChangeFunc
-}) => (
+  activeChange,
+  ERCComp,
+  BEPComp
+}: IGenTokenLinks) => (
   <div className="sidebar">
     <SidebarHeader />
-    <GenTokenLinks activeChange={activeChange}/>
+    <GenTokenLinks
+      activeChange={activeChange}
+      ERCComp={ERCComp}
+      BEPComp={BEPComp}
+    />
     <GithubBadge />
   </div>
 )
