@@ -1,4 +1,8 @@
-# Getting Started with Create React App
+# TKNGEN
+
+Create and deploy BEP20 / ERC20 tokens with a click of a button... tkngen
+
+<img src="./misc/sc.png" alt=""/>
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
