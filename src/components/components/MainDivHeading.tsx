@@ -19,7 +19,7 @@ export const MainDivHeading = ({
           </>
         }
       </div>
-      <button className="connect-web3-btn">
+      <button className="connect-web3-btn secondary-btn-tkn">
         <p>Connect Web3</p>
         <GrStatusGoodSmall className="web3-status-icon" style={ {
           color: '#ff4444'
