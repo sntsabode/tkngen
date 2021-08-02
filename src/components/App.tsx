@@ -1,64 +1,8 @@
 import React from 'react'
 import { Sidebar } from './Sidebar'
 import { Circles } from './components/utils/Circles'
-import { MainDivHeading } from './components/MainDivHeading'
-import { IMintableBurnableSwitches } from './components/MintableBurnableSwitches'
-import { MintableBurnableSwitches } from './components/MintableBurnableSwitches'
-import { DecimalsTotalSupplySliders } from './components/DecimalsTotalSupplySliders'
-
-type IDeployTokenCard = IMintableBurnableSwitches & {
-  handleSliderChange: (
-    event: React.ChangeEvent<{}>,
-    which: 'Decimals' | 'TotalSupply',
-    newValue: number | number[]
-  ) => void 
-}
-
-const DeployTokenCard = ({
-  mintableChecked,
-  burnableChecked,
-  handleSwitchChange,
-  handleSliderChange
-}: IDeployTokenCard) => (
-  <div className="deploy-token-card">
-    <MintableBurnableSwitches
-      mintableChecked={mintableChecked}
-      burnableChecked={burnableChecked}
-      handleSwitchChange={handleSwitchChange}
-    />
-    <DecimalsTotalSupplySliders
-      handleSliderChange={handleSliderChange}
-    />
-    <div className="deploy-token-btn-div">
-      <button className="deploy-token-btn">NEXT</button>
-    </div>
-  </div>
-)
-
-const MainDiv = ({
-  mintableChecked,
-  burnableChecked,
-  handleSwitchChange,
-  handleSliderChange,
-  ERCComp,
-  BEPComp
-}: IDeployTokenCard & {
-  ERCComp: boolean
-  BEPComp: boolean
-}) => (
-  <div className="main-content">
-    <MainDivHeading
-      ERCComp={ERCComp}
-      BEPComp={BEPComp}
-    />
-    <DeployTokenCard 
-      mintableChecked={mintableChecked}
-      burnableChecked={burnableChecked}
-      handleSwitchChange={handleSwitchChange}
-      handleSliderChange={handleSliderChange}
-    />
-  </div>
-)
+import { TokenNameSymbolModal } from './components/TokenNameSymbolModal'
+import { MainDiv } from './Main'
 
 const TopNav = () => (
   <div className="top-nav">
@@ -76,6 +20,7 @@ interface IAppState {
   TokenSymbol: string
   Decimals: number
   TotalSupply: number
+  ModalOpen: boolean
 }
 
 const URLs = {
@@ -98,11 +43,46 @@ export class App extends React.Component<{}, IAppState> {
     TokenName: '',
     TokenSymbol: '',
     Decimals: 18,
-    TotalSupply: 100000
+    TotalSupply: 100000,
+    ModalOpen: false
   }
 
   render = () => {
-    const activeChange = (
+    return (
+      <main>
+        <section className="glass">
+          <Sidebar
+            activeChange={this.handlers.activeChange}
+            ERCComp={this.state.ERCComp}
+            BEPComp={this.state.BEPComp}
+          />
+          <div className="container">
+            <TopNav />
+            <MainDiv
+              mintableChecked={this.state.MintableChecked}
+              burnableChecked={this.state.BurnableChecked}
+              handleSwitchChange={this.handlers.handleSwitchChange}
+              handleSliderChange={this.handlers.handleSliderChange}
+              ERCComp={this.state.ERCComp}
+              BEPComp={this.state.BEPComp}
+              openTknNameSymModal={this.handlers.openTknNameSymModal}
+            />
+            <TokenNameSymbolModal
+              modalOpen={this.state.ModalOpen}
+              setOpenClose={this.handlers.setTokenNameSymModalOpenClose}
+              handleOnchange={this.handlers.handleTknNameSymOnChange}
+              TokenName={this.state.TokenName}
+              TokenSymbol={this.state.TokenSymbol}
+            />
+          </div>
+        </section>
+        <Circles />
+      </main>
+    )
+  }
+
+  private handlers = ({
+    activeChange: (
       event: React.MouseEvent<HTMLDivElement, MouseEvent>,
       which: 'ERCComp' | 'BEPComp'
     ) => {
@@ -124,9 +104,9 @@ export class App extends React.Component<{}, IAppState> {
           URL: URLs.BEP20.Standard
         })
       }
-    }
+    },
 
-    const handleSwitchChange = (
+    handleSwitchChange: (
       event: React.ChangeEvent<HTMLInputElement>,
       which: 'MintableChecked' | 'BurnableChecked'
     ) => {
@@ -134,9 +114,9 @@ export class App extends React.Component<{}, IAppState> {
       this.setState({
         ...this.state, [which]: this.state[which] ? false : true
       })
-    }
+    },
 
-    const handleSliderChange = (
+    handleSliderChange: (
       event: React.ChangeEvent<{}>,
       which: 'Decimals' | 'TotalSupply',
       newValue: number | number[]
@@ -145,30 +125,31 @@ export class App extends React.Component<{}, IAppState> {
       this.setState({
         ...this.state, [which]: newValue
       })
-    }
+    },
 
-    return (
-      <main>
-        <section className="glass">
-          <Sidebar
-            activeChange={activeChange}
-            ERCComp={this.state.ERCComp}
-            BEPComp={this.state.BEPComp}
-          />
-          <div className="container">
-            <TopNav />
-            <MainDiv
-              mintableChecked={this.state.MintableChecked}
-              burnableChecked={this.state.BurnableChecked}
-              handleSwitchChange={handleSwitchChange}
-              handleSliderChange={handleSliderChange}
-              ERCComp={this.state.ERCComp}
-              BEPComp={this.state.BEPComp}
-            />
-          </div>
-        </section>
-        <Circles />
-      </main>
-    )
-  }
+    setTokenNameSymModalOpenClose: (
+      which: boolean
+    ) => {
+      this.setState({
+        ...this.state, ModalOpen: which
+      })
+    },
+
+    openTknNameSymModal: (
+      event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
+      event.preventDefault()
+      this.setState({
+        ...this.state, ModalOpen: true
+      })
+    },
+
+    handleTknNameSymOnChange: (which: 'TokenName' | 'TokenSymbol') => (
+      event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      this.setState({
+        ...this.state, [which]: event.target.value
+      })
+    }
+  })
 }
