@@ -61,7 +61,6 @@ main {
     rgba(255, 255, 255, 0.7),
     rgba(255, 255, 255, 0.3)
   );
-
   border-radius: 2rem;
   z-index: 3;
   backdrop-filter: blur(2rem);
@@ -213,15 +212,6 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  background: linear-gradient(
-    to right bottom,
-    rgba(255, 255, 255, 0.8),
-    rgba(255, 255, 255, 0.3)
-  );
-}
-
-.connect-web3-btn:hover {
-  cursor: pointer;
 }
 
 .connect-web3-btn > p {
@@ -284,7 +274,7 @@ main {
 }
 
 .slider-comps {
-  margin: 6rem 2rem;
+  margin: 5rem 2rem;
 }
 
 .deploy-token-comp {
@@ -313,6 +303,9 @@ main {
   border: none;
   border-radius: 2rem;
   box-shadow: 0 0 0px #eee;
+}
+
+.secondary-btn-tkn {
   background: linear-gradient(
     to right, rgba(255, 255, 255, 0.8) 0%,
     rgba(255, 255, 255, 0.3)  51%, rgba(255, 255, 255, 0.8)  100%
@@ -322,13 +315,23 @@ main {
   color: gray;
 }
 
-.deploy-token-btn:hover {
+.secondary-btn-tkn:hover {
   background-position: right center;
   color: #121212;
   -webkit-opacity: 0.2;
   opacity: 0.2;
   text-decoration: none;
   cursor: pointer;
+}
+
+.tkn-ns-title {
+  font-size: 30pt;
+  color: black;
+  -webkit-opacity: 0.8;
+  opacity: 0.7;
+  font-weight: 600;
+  margin: 0rem 2rem;
+  margin-top: 2rem;
 }
 
 @media (max-width: 768px) {
