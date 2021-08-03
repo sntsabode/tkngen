@@ -14,6 +14,10 @@ type IMainDiv = IMintableBurnableSwitches & {
   openTknNameSymModal: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void
+  Web3Status: string
+  connectWeb3: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => Promise<void>
 }
 
 export const MainDiv = ({
@@ -23,12 +27,16 @@ export const MainDiv = ({
   handleSliderChange,
   ERCComp,
   BEPComp,
-  openTknNameSymModal
+  openTknNameSymModal,
+  Web3Status,
+  connectWeb3
 }: IMainDiv) => (
   <div className="main-content">
     <MainDivHeading
       ERCComp={ERCComp}
       BEPComp={BEPComp}
+      Web3Status={Web3Status}
+      connectWeb3={connectWeb3}
     />
     <div className="deploy-token-card">
       <MintableBurnableSwitches
