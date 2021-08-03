@@ -1,8 +1,16 @@
 import { GrStatusGoodSmall } from 'react-icons/gr'
 
 export const MainDivHeading = ({
-  BEPComp, ERCComp
-}: { BEPComp: boolean, ERCComp: boolean }) => (
+  BEPComp, ERCComp,
+  connectWeb3, Web3Status
+}: {
+  BEPComp: boolean
+  ERCComp: boolean
+  Web3Status: string
+  connectWeb3: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => Promise<void>
+}) => (
   <h3 className="heading">
     <div className="status">
       <div>
@@ -19,10 +27,13 @@ export const MainDivHeading = ({
           </>
         }
       </div>
-      <button className="connect-web3-btn secondary-btn-tkn">
+      <button
+        className="connect-web3-btn secondary-btn-tkn"
+        onClick={connectWeb3}
+      >
         <p>Connect Web3</p>
         <GrStatusGoodSmall className="web3-status-icon" style={ {
-          color: '#ff4444'
+          color: Web3Status
         } }/>
       </button>
     </div>
