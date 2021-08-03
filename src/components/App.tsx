@@ -2,7 +2,11 @@ import React from 'react'
 import { Sidebar } from './Sidebar'
 import { Circles } from './components/utils/Circles'
 import { TokenNameSymbolModal } from './components/TokenNameSymbolModal'
+import { NetworkModal } from './components/NetworkModal'
+import { AskForPvtkModal } from './components/AskForPvtkModal'
 import { MainDiv } from './Main'
+import axios from 'axios'
+import Web3 from 'web3'
 
 const TopNav = () => (
   <div className="top-nav">
@@ -10,18 +14,61 @@ const TopNav = () => (
   </div>
 )
 
-interface IAppState {
-  URL: string
+type SupportedNetwork =
+  | 'MAINNET'
+  | 'KOVAN'
+  | 'BINANCESMARTCHAIN'
+  | 'BINANCESMARTCHAIN_TEST'
+
+interface IRequestBody {
+  tokenName: string
+  tokenDecimals: number
+  tokenSymbol: string
+  totalSupply: number
+  privateKey: string
+  network: SupportedNetwork
+}
+
+async function sendRequest(url: string, body: IRequestBody) {
+  return axios.post(url, body)
+}
+
+interface IActiveComponent {
   ERCComp: boolean
   BEPComp: boolean
+}
+
+interface IModalsOpen {
+  TokenNameSymModalOpen: boolean
+  NetworkModalOpen: boolean
+  PvtkModalOpen: boolean
+}
+
+interface IMintableBurnableChecked {
   MintableChecked: boolean
   BurnableChecked: boolean
+}
+
+interface IRequestData {
   TokenName: string
   TokenSymbol: string
   Decimals: number
   TotalSupply: number
-  ModalOpen: boolean
+  PrivateKey: string
+  Network: SupportedNetwork
 }
+
+interface INetworkSwitchChecked {
+  netOneChecked: boolean
+  netTwoChecked: boolean
+}
+
+type IAppState = IActiveComponent
+  & IModalsOpen
+  & IMintableBurnableChecked
+  & IRequestData
+  & INetworkSwitchChecked
+  & { URL: string, Web3Status: string }
 
 const URLs = {
   ERC20: {
@@ -34,6 +81,8 @@ const URLs = {
 }
 
 export class App extends React.Component<{}, IAppState> {
+  Web3?: Web3
+  
   state = {
     URL: URLs.ERC20.Standard,
     ERCComp: true,
@@ -44,7 +93,44 @@ export class App extends React.Component<{}, IAppState> {
     TokenSymbol: '',
     Decimals: 18,
     TotalSupply: 100000,
-    ModalOpen: false
+    TokenNameSymModalOpen: false,
+    NetworkModalOpen: false,
+    PvtkModalOpen: false,
+    PrivateKey: '',
+    Network: 'KOVAN' as SupportedNetwork,
+    netOneChecked: false,
+    netTwoChecked: false,
+    Web3Status: '#ff4444' // red
+  }
+
+  deployToken = async () => {
+    try {
+      const res = await sendRequest(this.state.URL, {
+        tokenName: this.state.TokenName,
+        tokenDecimals: this.state.Decimals,
+        tokenSymbol: this.state.TokenSymbol,
+        totalSupply: this.state.TotalSupply,
+        privateKey: this.state.PrivateKey,
+        network: this.state.Network
+      })
+
+      console.log(res)
+    } catch (e) {
+
+    }
+  }
+
+  connectWeb3 = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault()
+    
+    if (!(window as any).ethereum) return alert('Uh oh')
+
+    await (window as any).ethereum.send('eth_requestAccounts')
+    this.Web3 = new Web3((window as any).ethereum)
+    this.setState({
+      ...this.state, Web3Status: '#00C851' // green
+    })
+    this.handlers.handlePvtkModalOpenClose(true)
   }
 
   render = () => {
@@ -65,14 +151,53 @@ export class App extends React.Component<{}, IAppState> {
               handleSliderChange={this.handlers.handleSliderChange}
               ERCComp={this.state.ERCComp}
               BEPComp={this.state.BEPComp}
-              openTknNameSymModal={this.handlers.openTknNameSymModal}
+              openTknNameSymModal={(event) => {
+                event.preventDefault()
+                this.handlers.handleTokenNameSymModalOpenClose(true)
+              }}
+              Web3Status={this.state.Web3Status}
+              connectWeb3={this.connectWeb3}
             />
             <TokenNameSymbolModal
-              modalOpen={this.state.ModalOpen}
-              setOpenClose={this.handlers.setTokenNameSymModalOpenClose}
+              modalOpen={this.state.TokenNameSymModalOpen}
+              setOpenClose={this.handlers.handleTokenNameSymModalOpenClose}
               handleOnchange={this.handlers.handleTknNameSymOnChange}
               TokenName={this.state.TokenName}
               TokenSymbol={this.state.TokenSymbol}
+              onClick={(event) => {
+                event.preventDefault()
+                this.handlers.handleTokenNameSymModalOpenClose(false)
+                setTimeout(
+                  () => this.handlers.handleNetworkModalOpenClose(true),
+                  200
+                )
+              }}
+            />
+            <NetworkModal
+              networkModalOpen={this.state.NetworkModalOpen}
+              setOpenClose={this.handlers.handleNetworkModalOpenClose}
+              networks={ {
+                netOne: {
+                  net: this.state.ERCComp ? 'MAINNET' : 'BSC' as any,
+                  checked: this.state.netOneChecked
+                },
+
+                netTwo: {
+                  net: this.state.ERCComp ? 'KOVAN' : 'BSC Test Net' as any,
+                  checked: this.state.netTwoChecked
+                }
+              } }
+              onChange={this.handlers.handleNetworkChange}
+            />
+            <AskForPvtkModal
+              pvtkModalOpen={this.state.PvtkModalOpen}
+              setOpenClose={this.handlers.handlePvtkModalOpenClose}
+              pvtkOnChange={(event) => {
+                this.setState({
+                  ...this.state, PrivateKey: event.target.value
+                })
+              }}
+              PrivateKey={this.state.PrivateKey}
             />
           </div>
         </section>
@@ -80,6 +205,7 @@ export class App extends React.Component<{}, IAppState> {
       </main>
     )
   }
+
 
   private handlers = ({
     activeChange: (
@@ -93,7 +219,8 @@ export class App extends React.Component<{}, IAppState> {
           ...this.state,
           ERCComp: bool,
           BEPComp: !bool,
-          URL: URLs.ERC20.Standard
+          URL: URLs.ERC20.Standard,
+          Network: 'KOVAN'
         })
       } else {
         const bool = !this.state.BEPComp ? true : false
@@ -101,7 +228,8 @@ export class App extends React.Component<{}, IAppState> {
           ...this.state,
           BEPComp: bool,
           ERCComp: !bool,
-          URL: URLs.BEP20.Standard
+          URL: URLs.BEP20.Standard,
+          Network: 'BINANCESMARTCHAIN_TEST'
         })
       }
     },
@@ -127,20 +255,11 @@ export class App extends React.Component<{}, IAppState> {
       })
     },
 
-    setTokenNameSymModalOpenClose: (
+    handleTokenNameSymModalOpenClose: (
       which: boolean
     ) => {
       this.setState({
-        ...this.state, ModalOpen: which
-      })
-    },
-
-    openTknNameSymModal: (
-      event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => {
-      event.preventDefault()
-      this.setState({
-        ...this.state, ModalOpen: true
+        ...this.state, TokenNameSymModalOpen: which
       })
     },
 
@@ -149,6 +268,40 @@ export class App extends React.Component<{}, IAppState> {
     ) => {
       this.setState({
         ...this.state, [which]: event.target.value
+      })
+    },
+
+    handleNetworkModalOpenClose: (which: boolean) => {
+      this.setState({
+        ...this.state, NetworkModalOpen: which
+      })
+    },
+
+    handleNetworkChange: (
+      event: React.ChangeEvent, newNet: string,
+      net: 'netOneChecked' | 'netTwoChecked'
+    ) => {
+      const bool = this.state[net] ? false : true
+      if (net === 'netOneChecked') {
+        this.setState({
+          ...this.state, Network: newNet as SupportedNetwork,
+          netOneChecked: bool,
+          netTwoChecked: !bool
+        })
+      }
+
+      else {
+        this.setState({
+          ...this.state, Network: newNet as SupportedNetwork,
+          netTwoChecked: bool,
+          netOneChecked: !bool
+        })
+      }
+    },
+
+    handlePvtkModalOpenClose: (which: boolean) => {
+      this.setState({
+        ...this.state, PvtkModalOpen: which
       })
     }
   })
