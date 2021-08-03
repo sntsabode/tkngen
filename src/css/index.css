@@ -334,6 +334,13 @@ main {
   margin-top: 2rem;
 }
 
+.network-switches-container {
+  margin: 4rem 2rem;
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
 @media (max-width: 768px) {
   .glass {
     min-height: 90vh;
