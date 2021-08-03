@@ -2,11 +2,11 @@ import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch'
 
 interface Styles extends Partial<Record<SwitchClassKey, string>> {
-  focusVisible?: string;
+  focusVisible?: string
 }
 
 interface Props extends SwitchProps {
-  classes: Styles;
+  classes: Styles
 }
 
 export const SwitchButton = withStyles((theme: Theme) => createStyles({
