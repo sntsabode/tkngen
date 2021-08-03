@@ -1,4 +1,3 @@
-
 import Modal from '@material-ui/core/Modal'
 import { createStyles, makeStyles } from '@material-ui/core'
 import Backdrop from '@material-ui/core/Backdrop'
@@ -7,6 +6,8 @@ import FormControl from '@material-ui/core/FormControl'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import InputLabel from '@material-ui/core/InputLabel'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import { Styles } from './__styles__'
+import React from 'react'
 
 const modalStyle = {
   top: '20%',
@@ -14,17 +15,7 @@ const modalStyle = {
 }
 
 const modalStyles = makeStyles(() => createStyles({
-  'token-name-sym-modal': {
-    position: 'absolute',
-    width: '35%',
-    height: '60%',
-    border: 'none',
-    background: 'linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3))',
-    borderRadius: '2rem',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
+  'token-name-sym-modal': Styles['modal'] as any,
 
   'tkn-name-sym-inputs': {
     display: 'flex',
@@ -35,30 +26,22 @@ const modalStyles = makeStyles(() => createStyles({
 
   'tkn-input': {
     margin: '2rem 2rem',
-    '&:hover': {
+    '& :hover': {
       borderColor: '#bfbfbf'
     }
   },
 
   'tkn-input-box': {
-    '&:active': {
+    '& :active': {
       borderColor: '#bfbfbf'
     },
 
-    '&:hover': {
+    '& :hover': {
       borderColor: '#bfbfbf'
     }
   },
 
-  'deploy-tkn-f-btn': {
-    width: '40%',
-    height: '4rem',
-    color: 'gray !important',
-    border: 'none',
-    borderRadius: '2rem',
-    fontSize: '14pt',
-    fontWeight: 700
-  }
+  'deploy-tkn-f-btn': Styles['modal-btn'] as any
 }))
 
 export interface ITokenNameSymbolModal {
@@ -69,17 +52,18 @@ export interface ITokenNameSymbolModal {
   modalOpen: boolean
   TokenName: string
   TokenSymbol: string
+  onClick: (event: React.MouseEvent) => void
 }
 
 export const TokenNameSymbolModal = ({
   setOpenClose, modalOpen, handleOnchange,
-  TokenName, TokenSymbol
+  TokenName, TokenSymbol, onClick
 }: ITokenNameSymbolModal) => {
   const styles = modalStyles()
 
   const TokenNameSymbolModal = () => (
     <div style={modalStyle} className={styles['token-name-sym-modal']}>
-      <h2 id="last-step-title" className="tkn-ns-title">Last Step</h2>
+      <h2 id="metadata-step-title" className="tkn-ns-title">Meta Data</h2>
       <form className={styles['tkn-name-sym-inputs']} noValidate autoComplete="off">
         <FormControl fullWidth className={styles['tkn-input']} variant="outlined">
           <InputLabel htmlFor="outlined-adornment-amount">Token Name</InputLabel>
@@ -105,7 +89,10 @@ export const TokenNameSymbolModal = ({
         </FormControl>
       </form>
       <div style={ { marginTop: '2rem' } }></div>
-      <button className={styles['deploy-tkn-f-btn'] + ' secondary-btn-tkn'}>DEPLOY!</button>
+      <button
+        className={styles['deploy-tkn-f-btn'] + ' secondary-btn-tkn'}
+        onClick={onClick}
+      >NEXT</button>
     </div>
   )
 
@@ -115,13 +102,13 @@ export const TokenNameSymbolModal = ({
       onClose={() => {
         setOpenClose(false)
       }}
-      aria-labelledby="last-step-title"
+      aria-labelledby="metadata-step-title"
       closeAfterTransition
       BackdropComponent={Backdrop}
-      BackdropProps={{
+      BackdropProps={ {
         timeout: 800,
         style: { backdropFilter: 'blur(2rem)' }
-      }}
+      } }
     >
       <Fade in={modalOpen}>
         <TokenNameSymbolModal />
