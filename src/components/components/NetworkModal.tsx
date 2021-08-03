@@ -9,7 +9,13 @@ const modalStyles = makeStyles(() => createStyles({
   'network-modal': Styles['modal'] as any,
   'network-modal-deploy-btn': {
     ...Styles['modal-btn'] as any,
-    marginTop: '1rem'
+    marginTop: '2rem'
+  },
+
+  'network-explain': {
+    color: 'black',
+    fontSize: '11pt',
+    margin: '2rem 2rem'
   }
 }))
 
@@ -31,17 +37,21 @@ interface INetworkModal {
     newNet: string,
     net: 'netOneChecked' | 'netTwoChecked'
   ) => void
+  deployToken: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => Promise<void>
 }
 
 export const NetworkModal = ({
   networkModalOpen, setOpenClose,
-  networks, onChange
+  networks, onChange, deployToken
 }: INetworkModal) => {
   const styles = modalStyles()
 
   const NetworkModal = () => (
     <div style={modalStyle} className={styles['network-modal']}>
       <h2 id="network-step-title" className="tkn-ns-title">Network</h2>
+      <p className={styles['network-explain']}>Select the network you want your token deployed on.</p>
       <div className="network-switches-container">
         <Typography component="div">
           <Grid component="label" container alignItems="center" spacing={1}>
@@ -72,7 +82,10 @@ export const NetworkModal = ({
           </Grid>
         </Typography>
       </div>
-      <button className={styles['network-modal-deploy-btn'] + ' secondary-btn-tkn'}>Deploy!</button>
+      <button
+        className={styles['network-modal-deploy-btn'] + ' secondary-btn-tkn'}
+        onClick={deployToken}
+      >Deploy!</button>
     </div>
   )
 
