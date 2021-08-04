@@ -335,7 +335,7 @@ main {
 }
 
 .network-switches-container {
-  margin: 4rem 2rem;
+  margin: 2rem 2rem;
   display: flex;
   justify-content: space-evenly;
   width: 100%;
