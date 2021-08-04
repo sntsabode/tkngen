@@ -7,6 +7,8 @@ import { AskForPvtkModal } from './components/AskForPvtkModal'
 import { MainDiv } from './Main'
 import axios from 'axios'
 import Web3 from 'web3'
+import { LoadingModal } from './components/LoadingModal'
+import { NotificationSnackBars } from './components/NotificationSnackBars'
 
 const TopNav = () => (
   <div className="top-nav">
@@ -42,6 +44,7 @@ interface IModalsOpen {
   TokenNameSymModalOpen: boolean
   NetworkModalOpen: boolean
   PvtkModalOpen: boolean
+  LoadingModalOpen: boolean
 }
 
 interface IMintableBurnableChecked {
@@ -63,12 +66,19 @@ interface INetworkSwitchChecked {
   netTwoChecked: boolean
 }
 
+interface ISnacksOpen {
+  successSnackOpen: boolean
+  errorSnackOpen: boolean
+  infoSnackOpen: boolean
+}
+
 type IAppState = IActiveComponent
   & IModalsOpen
   & IMintableBurnableChecked
   & IRequestData
   & INetworkSwitchChecked
-  & { URL: string, Web3Status: string }
+  & ISnacksOpen
+  & { URL: string, Web3Status: string, tokenType: 'ERC20' | 'BEP20' }
 
 const URLs = {
   ERC20: {
@@ -76,7 +86,20 @@ const URLs = {
   },
 
   BEP20: {
-    Standard: 'http://localhost:9000/BEP-20/Standard'
+    Standard: 'http://localhost:9000/BEP-20/Standard',
+    MintableBurnable: ''
+  }
+}
+
+const BlockExplorerURLs = {
+  bsc: {
+    mainnet: '',
+    testnet: 'https://testnet.bscscan.com/tx/'
+  },
+
+  eth: {
+    mainnet: '',
+    kovan: ''
   }
 }
 
@@ -95,28 +118,77 @@ export class App extends React.Component<{}, IAppState> {
     TotalSupply: 100000,
     TokenNameSymModalOpen: false,
     NetworkModalOpen: false,
+    LoadingModalOpen: false,
     PvtkModalOpen: false,
     PrivateKey: '',
     Network: 'KOVAN' as SupportedNetwork,
     netOneChecked: false,
     netTwoChecked: false,
-    Web3Status: '#ff4444' // red
+    Web3Status: '#ff4444', // red
+    tokenType: 'ERC20' as 'ERC20' | 'BEP20',
+    successSnackOpen: false,
+    errorSnackOpen: false,
+    infoSnackOpen: false
   }
 
   deployToken = async () => {
     try {
+      if (!this.state.PrivateKey) {
+        this.setState({
+          ...this.state, NetworkModalOpen: false
+        })
+        return
+      }
+
+      this.setState({
+        ...this.state,
+        NetworkModalOpen: false,
+        LoadingModalOpen: true
+      })
+
       const res = await sendRequest(this.state.URL, {
         tokenName: this.state.TokenName,
         tokenDecimals: this.state.Decimals,
         tokenSymbol: this.state.TokenSymbol,
         totalSupply: this.state.TotalSupply,
         privateKey: this.state.PrivateKey,
-        network: this.state.Network
+        network: ((): SupportedNetwork => {
+          if ((this.state.Network as string) === 'BSC Test Net')
+            return 'BINANCESMARTCHAIN_TEST'
+          else if ((this.state.Network as string) === 'BSC')
+            return 'BINANCESMARTCHAIN'
+          else return this.state.Network
+        })()
       })
 
-      console.log(res)
-    } catch (e) {
+      const redirectUrl = (this.state.Network as string) === 'BSC Test Net'
+        ? BlockExplorerURLs.bsc.testnet + res.data.data.receipt.transactionHash
+        : (this.state.Network as string) === 'BSC'
+        ? BlockExplorerURLs.bsc.mainnet + res.data.data.receipt.transactionHash
+        : this.state.Network === 'KOVAN'
+        ? BlockExplorerURLs.eth.kovan + res.data.data.receipt.transactionHash
+        : this.state.Network === 'MAINNET'
+        ? BlockExplorerURLs.eth.mainnet + res.data.receipt.transactionHash
+        : '/'
 
+      console.log(res)
+
+      this.setState({
+        ...this.state, LoadingModalOpen: false
+      })
+
+      setTimeout(() => this.setState({
+        ...this.state, successSnackOpen: true
+      }), 500)
+      setTimeout(() => this.setState({
+        ...this.state, infoSnackOpen: true, successSnackOpen: false
+      }), 2000)
+      setTimeout(() => window.location.href = redirectUrl, 5000)
+    } catch (e) {
+      this.setState({
+        ...this.state, LoadingModalOpen: false, errorSnackOpen: true
+      })
+      console.error(e)
     }
   }
 
@@ -188,6 +260,10 @@ export class App extends React.Component<{}, IAppState> {
                 }
               } }
               onChange={this.handlers.handleNetworkChange}
+              deployToken={async (event) => {
+                event.preventDefault()
+                return this.deployToken()
+              } }
             />
             <AskForPvtkModal
               pvtkModalOpen={this.state.PvtkModalOpen}
@@ -199,13 +275,31 @@ export class App extends React.Component<{}, IAppState> {
               }}
               PrivateKey={this.state.PrivateKey}
             />
+            <LoadingModal
+              loadingModalOpen={this.state.LoadingModalOpen}
+              onClose={() => {
+                this.setState({
+                  ...this.state, LoadingModalOpen: false
+                })
+              }}
+            />
+            <NotificationSnackBars
+              successSnackOpen={this.state.successSnackOpen}
+              errorSnackOpen={this.state.errorSnackOpen}
+              tokenType={this.state.tokenType}
+              infoSnackOpen={this.state.infoSnackOpen}
+              handleClose={(which: 'successSnackOpen' | 'errorSnackOpen' | 'infoSnackOpen') => () => {
+                this.setState({
+                  ...this.state, [which]: false
+                })
+              }}
+            />
           </div>
         </section>
         <Circles />
       </main>
     )
   }
-
 
   private handlers = ({
     activeChange: (
@@ -220,7 +314,8 @@ export class App extends React.Component<{}, IAppState> {
           ERCComp: bool,
           BEPComp: !bool,
           URL: URLs.ERC20.Standard,
-          Network: 'KOVAN'
+          Network: 'KOVAN',
+          tokenType: 'ERC20'
         })
       } else {
         const bool = !this.state.BEPComp ? true : false
@@ -229,7 +324,8 @@ export class App extends React.Component<{}, IAppState> {
           BEPComp: bool,
           ERCComp: !bool,
           URL: URLs.BEP20.Standard,
-          Network: 'BINANCESMARTCHAIN_TEST'
+          Network: 'BINANCESMARTCHAIN_TEST',
+          tokenType: 'BEP20'
         })
       }
     },
