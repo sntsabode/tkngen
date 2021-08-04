@@ -4,12 +4,13 @@ import FormControl from '@material-ui/core/FormControl'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Modal from '@material-ui/core/Modal'
-import { Styles, modalStyle } from './__styles__'
+import { Styles } from './__styles__'
 
 const modalStyles = makeStyles(() => createStyles({
   'pvtk-modal': {
     ...(Styles['modal'] as any),
-    padding: '2rem 2rem'
+    padding: '2rem 2rem',
+    height: '65%'
   },
 
   'pvtk-explain': {
@@ -44,7 +45,10 @@ export const AskForPvtkModal = ({
   const styles = modalStyles()
 
   const AskForPvtkModal = () => (
-    <div style={modalStyle} className={styles['pvtk-modal']}>
+    <div style={{
+      top: '15%',
+      left: '32.5%',
+    }} className={styles['pvtk-modal']}>
       <h2 id="pvtk-step-title" className="tkn-ns-title">Private Key</h2>
       <p className={styles['pvtk-explain']}>
         Unfortunately we have to ask for your private key as most of the complexity pertaining the contract deployment is handled serverside.
