@@ -5,14 +5,12 @@ import { Loader } from './utils/Loader'
 
 export interface ILoadingModal {
   loadingModalOpen: boolean
-  onClose: () => void
 }
 
 export const LoadingModal = ({
-  loadingModalOpen, onClose
+  loadingModalOpen
 }: ILoadingModal) => <Modal
   open={loadingModalOpen}
-  onClose={onClose}
   closeAfterTransition
   BackdropComponent={Backdrop}
   BackdropProps={ {
