@@ -36,11 +36,14 @@ interface IAskForPvtkModal {
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => void
   PrivateKey: string
+  confirmPvtk: (
+    event: any
+  ) => void
 }
 
 export const AskForPvtkModal = ({
   pvtkModalOpen, setOpenClose,
-  pvtkOnChange, PrivateKey
+  pvtkOnChange, PrivateKey, confirmPvtk
 }: IAskForPvtkModal) => {
   const styles = modalStyles()
 
@@ -66,6 +69,7 @@ export const AskForPvtkModal = ({
       </form>
       <button
         className={styles['confirm-button'] + ' secondary-btn-tkn'}
+        onClick={confirmPvtk}
       >
         Confirm
       </button>
