@@ -9,86 +9,44 @@ import axios from 'axios'
 import Web3 from 'web3'
 import { LoadingModal } from './components/LoadingModal'
 import { NotificationSnackBars } from './components/NotificationSnackBars'
+import { IAppState, IRequestBody, SupportedNetwork } from './IApp'
+import { GrStatusGoodSmall } from 'react-icons/gr'
+import { BiMenuAltLeft } from 'react-icons/bi'
 
-const TopNav = () => (
+const TopNav = ({
+  connectWeb3, Web3Status, openCloseSidebar
+}: {
+  openCloseSidebar: (
+    event: React.MouseEvent<SVGElement, MouseEvent>
+  ) => void
+  Web3Status: string
+  connectWeb3: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => Promise<void>
+}) => (
   <div className="top-nav">
-    
+    <BiMenuAltLeft onClick={openCloseSidebar} className="menu-icon"/>
+
+    <button
+      id="secondary-connect-web3-btn"
+      className="connect-web3-btn secondary-btn-tkn"
+      onClick={connectWeb3}
+    >
+      <p>Connect Web3</p>
+      <GrStatusGoodSmall className="web3-status-icon" style={ {
+        color: Web3Status
+      } }/>
+    </button>
   </div>
 )
-
-type SupportedNetwork =
-  | 'MAINNET'
-  | 'KOVAN'
-  | 'BINANCESMARTCHAIN'
-  | 'BINANCESMARTCHAIN_TEST'
-
-interface IRequestBody {
-  tokenName: string
-  tokenDecimals: number
-  tokenSymbol: string
-  totalSupply: number
-  privateKey: string
-  network: SupportedNetwork
-}
 
 async function sendRequest(url: string, body: IRequestBody) {
   return axios.post(url, body)
 }
 
-interface IActiveComponent {
-  ERCComp: boolean
-  BEPComp: boolean
-}
-
-interface IModalsOpen {
-  TokenNameSymModalOpen: boolean
-  NetworkModalOpen: boolean
-  PvtkModalOpen: boolean
-  LoadingModalOpen: boolean
-}
-
-interface IMintableBurnableChecked {
-  MintableChecked: boolean
-  BurnableChecked: boolean
-}
-
-interface IRequestData {
-  TokenName: string
-  TokenSymbol: string
-  Decimals: number
-  TotalSupply: number
-  PrivateKey: string
-  Network: SupportedNetwork
-}
-
-interface INetworkSwitchChecked {
-  netOneChecked: boolean
-  netTwoChecked: boolean
-}
-
-interface ISnacksOpen {
-  successSnackOpen: boolean
-  errorSnackOpen: boolean
-  infoSnackOpen: boolean
-}
-
-type IAppState = IActiveComponent
-  & IModalsOpen
-  & IMintableBurnableChecked
-  & IRequestData
-  & INetworkSwitchChecked
-  & ISnacksOpen
-  & { URL: string, Web3Status: string, tokenType: 'ERC20' | 'BEP20' }
-
 const URLs = {
-  ERC20: {
-    Standard: 'http://localhost:9000/ERC-20/Standard'
-  },
-
-  BEP20: {
-    Standard: 'http://localhost:9000/BEP-20/Standard',
-    MintableBurnable: ''
-  }
+  ERC20: 'http://localhost:9000/ERC-20/',
+  BEP20: 'http://localhost:9000/BEP-20/'
 }
 
 const BlockExplorerURLs = {
@@ -105,9 +63,8 @@ const BlockExplorerURLs = {
 
 export class App extends React.Component<{}, IAppState> {
   Web3?: Web3
-  
   state = {
-    URL: URLs.ERC20.Standard,
+    URL: URLs.ERC20,
     ERCComp: true,
     BEPComp: false,
     MintableChecked: false,
@@ -128,17 +85,28 @@ export class App extends React.Component<{}, IAppState> {
     tokenType: 'ERC20' as 'ERC20' | 'BEP20',
     successSnackOpen: false,
     errorSnackOpen: false,
-    infoSnackOpen: false
+    infoSnackOpen: false,
+    enterPvtkSnackOpen: false,
+    enteredPrivateKeySnackOpen: false,
+    sidebarOpen: false,
+    pvtk: ''
   }
 
   deployToken = async () => {
     try {
-      if (!this.state.PrivateKey) {
+      if (!this.state.pvtk) {
         this.setState({
-          ...this.state, NetworkModalOpen: false
+          ...this.state, NetworkModalOpen: false,
+          enterPvtkSnackOpen: true
         })
+
+        setTimeout(() => this.setState({
+          ...this.state, PvtkModalOpen: true
+        }), 11000)
         return
       }
+
+      const url = this.deployToken_.determineUrlPath()
 
       this.setState({
         ...this.state,
@@ -146,37 +114,26 @@ export class App extends React.Component<{}, IAppState> {
         LoadingModalOpen: true
       })
 
-      const res = await sendRequest(this.state.URL, {
-        tokenName: this.state.TokenName,
-        tokenDecimals: this.state.Decimals,
-        tokenSymbol: this.state.TokenSymbol,
-        totalSupply: this.state.TotalSupply,
-        privateKey: this.state.PrivateKey,
-        network: ((): SupportedNetwork => {
-          if ((this.state.Network as string) === 'BSC Test Net')
-            return 'BINANCESMARTCHAIN_TEST'
-          else if ((this.state.Network as string) === 'BSC')
-            return 'BINANCESMARTCHAIN'
-          else return this.state.Network
-        })()
-      })
-
-      const redirectUrl = (this.state.Network as string) === 'BSC Test Net'
-        ? BlockExplorerURLs.bsc.testnet + res.data.data.receipt.transactionHash
-        : (this.state.Network as string) === 'BSC'
-        ? BlockExplorerURLs.bsc.mainnet + res.data.data.receipt.transactionHash
-        : this.state.Network === 'KOVAN'
-        ? BlockExplorerURLs.eth.kovan + res.data.data.receipt.transactionHash
-        : this.state.Network === 'MAINNET'
-        ? BlockExplorerURLs.eth.mainnet + res.data.receipt.transactionHash
-        : '/'
+      const res = await this.deployToken_.sendRequest(url)
+      const redirectUrl = this.deployToken_.determineRedirectUrl(res.data.data.receipt.transactionHash)
 
       console.log(res)
 
+      this.deployToken_.redirectUser(redirectUrl)
+    } catch (e) {
+      console.error(e)
+      this.setState({
+        ...this.state, LoadingModalOpen: false, errorSnackOpen: true
+      })
+    }
+  }
+
+  readonly deployToken_ = {
+    redirectUser: (redirectUrl: string) => {
       this.setState({
         ...this.state, LoadingModalOpen: false
       })
-
+  
       setTimeout(() => this.setState({
         ...this.state, successSnackOpen: true
       }), 500)
@@ -184,15 +141,45 @@ export class App extends React.Component<{}, IAppState> {
         ...this.state, infoSnackOpen: true, successSnackOpen: false
       }), 2000)
       setTimeout(() => window.location.href = redirectUrl, 5000)
-    } catch (e) {
-      this.setState({
-        ...this.state, LoadingModalOpen: false, errorSnackOpen: true
-      })
-      console.error(e)
-    }
+    },
+
+    determineUrlPath: () => {
+      if (this.state.MintableChecked && !this.state.BurnableChecked)
+        return this.state.URL + ''
+      else if (this.state.BurnableChecked && !this.state.MintableChecked)
+        return this.state.URL + ''
+      else if (this.state.MintableChecked && this.state.BurnableChecked)
+        return this.state.URL + 'MintableBurnable'
+      else return this.state.URL + 'Standard'
+    },
+
+    determineRedirectUrl: (txhash: string) => (this.state.Network as string) === 'BSC Test Net'
+    ? BlockExplorerURLs.bsc.testnet + txhash
+    : (this.state.Network as string) === 'BSC'
+    ? BlockExplorerURLs.bsc.mainnet + txhash
+    : this.state.Network === 'KOVAN'
+    ? BlockExplorerURLs.eth.kovan + txhash
+    : this.state.Network === 'MAINNET'
+    ? BlockExplorerURLs.eth.mainnet + txhash
+    : '/',
+
+    sendRequest: (url: string) => sendRequest(url, {
+      tokenName: this.state.TokenName,
+      tokenDecimals: this.state.Decimals,
+      tokenSymbol: this.state.TokenSymbol,
+      totalSupply: this.state.TotalSupply,
+      privateKey: this.state.pvtk,
+      network: ((): SupportedNetwork => {
+        if ((this.state.Network as string) === 'BSC Test Net')
+          return 'BINANCESMARTCHAIN_TEST'
+        else if ((this.state.Network as string) === 'BSC')
+          return 'BINANCESMARTCHAIN'
+        else return this.state.Network
+      })()
+    })
   }
 
-  connectWeb3 = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  readonly connectWeb3 = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault()
     
     if (!(window as any).ethereum) return alert('Uh oh')
@@ -205,7 +192,7 @@ export class App extends React.Component<{}, IAppState> {
     this.handlers.handlePvtkModalOpenClose(true)
   }
 
-  render = () => {
+  readonly render = () => {
     return (
       <main>
         <section className="glass">
@@ -215,7 +202,26 @@ export class App extends React.Component<{}, IAppState> {
             BEPComp={this.state.BEPComp}
           />
           <div className="container">
-            <TopNav />
+            <TopNav
+              connectWeb3={this.connectWeb3}
+              Web3Status={this.state.Web3Status}
+              openCloseSidebar={(event) => {
+                if (!this.state.sidebarOpen) {
+                  document.getElementById('sidebar_')!.style.display = 'flex !important'
+                  this.setState({
+                    ...this.state, sidebarOpen: true
+                  })
+                  console.log('sidebar open')
+                }
+
+                document.getElementById('sidebar_')!.style.display = 'none !important'
+                this.setState({
+                  ...this.state, sidebarOpen: false
+                })
+
+                console.log('llll')
+              }}
+            />
             <MainDiv
               mintableChecked={this.state.MintableChecked}
               burnableChecked={this.state.BurnableChecked}
@@ -225,6 +231,7 @@ export class App extends React.Component<{}, IAppState> {
               BEPComp={this.state.BEPComp}
               openTknNameSymModal={(event) => {
                 event.preventDefault()
+                console.log(this.deployToken_.determineUrlPath())
                 this.handlers.handleTokenNameSymModalOpenClose(true)
               }}
               Web3Status={this.state.Web3Status}
@@ -274,25 +281,23 @@ export class App extends React.Component<{}, IAppState> {
                 })
               }}
               PrivateKey={this.state.PrivateKey}
+              confirmPvtk={this.handlers.confirmPvtk}
             />
             <LoadingModal
               loadingModalOpen={this.state.LoadingModalOpen}
-              onClose={() => {
-                this.setState({
-                  ...this.state, LoadingModalOpen: false
-                })
-              }}
             />
             <NotificationSnackBars
               successSnackOpen={this.state.successSnackOpen}
               errorSnackOpen={this.state.errorSnackOpen}
               tokenType={this.state.tokenType}
               infoSnackOpen={this.state.infoSnackOpen}
-              handleClose={(which: 'successSnackOpen' | 'errorSnackOpen' | 'infoSnackOpen') => () => {
+              handleClose={(which: 'successSnackOpen' | 'errorSnackOpen' | 'infoSnackOpen' | 'enterPvtkSnackOpen' | 'enteredPrivateKeySnackOpen') => () => {
                 this.setState({
                   ...this.state, [which]: false
                 })
               }}
+              enterPvtkSnackOpen={this.state.enterPvtkSnackOpen}
+              enteredPrivateKeySnackOpen={this.state.enteredPrivateKeySnackOpen}
             />
           </div>
         </section>
@@ -313,7 +318,7 @@ export class App extends React.Component<{}, IAppState> {
           ...this.state,
           ERCComp: bool,
           BEPComp: !bool,
-          URL: URLs.ERC20.Standard,
+          URL: URLs.ERC20,
           Network: 'KOVAN',
           tokenType: 'ERC20'
         })
@@ -323,7 +328,7 @@ export class App extends React.Component<{}, IAppState> {
           ...this.state,
           BEPComp: bool,
           ERCComp: !bool,
-          URL: URLs.BEP20.Standard,
+          URL: URLs.BEP20,
           Network: 'BINANCESMARTCHAIN_TEST',
           tokenType: 'BEP20'
         })
@@ -399,6 +404,21 @@ export class App extends React.Component<{}, IAppState> {
       this.setState({
         ...this.state, PvtkModalOpen: which
       })
+    },
+
+    confirmPvtk: (event: any) => {
+      event.preventDefault()
+      const pvt = '•••••••••••••••'
+
+      this.setState({
+        ...this.state, pvtk: this.state.PrivateKey, PrivateKey: pvt
+      })
+
+      setTimeout(() => {
+        this.setState({
+          ...this.state, PvtkModalOpen: false, enteredPrivateKeySnackOpen: true
+        })
+      }, 2000)
     }
   })
 }
