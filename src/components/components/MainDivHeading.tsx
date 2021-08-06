@@ -28,6 +28,7 @@ export const MainDivHeading = ({
         }
       </div>
       <button
+        id="main-connect-web3-btn"
         className="connect-web3-btn secondary-btn-tkn"
         onClick={connectWeb3}
       >
