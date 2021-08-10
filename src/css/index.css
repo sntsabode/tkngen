@@ -248,6 +248,55 @@ main {
   font-size: 11pt;
 }
 
+.modal {
+  position: absolute;
+  width: 35%;
+  border: none;
+  background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+  border-radius: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal.stan {
+  height: 60%;
+}
+
+.modal.fiveup {
+  height: 65%;
+}
+
+.modal-btn {
+  width: 40%;
+  height: 4rem;
+  color: gray !important;
+  border: none;
+  border-radius: 2rem;
+  font-size: 14pt;
+  font-weight: 700;
+}
+
+.pvtk-modal {
+  padding: 2rem 2rem;
+}
+
+.modal-explain {
+  color: black;
+  font-size: 11pt;
+  margin: 2rem 2rem;
+  text-align: center;
+}
+
+.pvtk-input {
+  margin: 2rem 0rem !important;
+  padding: 2rem 2rem;
+}
+
+.confirm-button {
+  margin-top: 2rem;
+}
+
 .mintable-burnable-switches {
   margin-top: 2rem;
   margin-left: 2rem;
@@ -341,7 +390,21 @@ main {
   width: 100%;
 }
 
-@media (max-width: 768px) {
+.network-exper-switch {
+  margin: 2rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+@media (max-width: 1250px) {
+  .gen-token-link  {
+    padding: 1rem 3rem;
+  }
+}
+
+@media (max-width: 950px) {
   .glass {
     min-height: 90vh;
     width: 90%;
@@ -377,6 +440,14 @@ main {
   color: white;
   -webkit-opacity: 0.2;
   opacity: 0.2;
+}
+
+.Toastify__toast--error {
+  background-color: #f44336;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  line-height: 1.43;
+  font-size: 0.875rem;
 }
 
 @media (max-width: 480px) {
