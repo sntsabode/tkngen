@@ -1,33 +1,9 @@
-import { Backdrop, createStyles, Fade } from '@material-ui/core'
-import { makeStyles } from '@material-ui/styles'
+import { Backdrop, Fade } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Modal from '@material-ui/core/Modal'
-import { Styles } from './__styles__'
-
-const modalStyles = makeStyles(() => createStyles({
-  'pvtk-modal': {
-    ...(Styles['modal'] as any),
-    padding: '2rem 2rem',
-    height: '65%'
-  },
-
-  'pvtk-explain': {
-    color: 'black',
-    fontSize: '11pt',
-    margin: '2rem 2rem'
-  },
-
-  'pvtk-input': {
-    padding: '2rem 2rem'
-  },
-
-  'confirm-button': {
-    ...Styles['modal-btn'] as any,
-    marginTop: '2rem'
-  }
-}))
+import { FiKey } from 'react-icons/fi'
 
 interface IAskForPvtkModal {
   pvtkModalOpen: boolean,
@@ -45,30 +21,28 @@ export const AskForPvtkModal = ({
   pvtkModalOpen, setOpenClose,
   pvtkOnChange, PrivateKey, confirmPvtk
 }: IAskForPvtkModal) => {
-  const styles = modalStyles()
-
-  const AskForPvtkModal = () => (
+  const askForPvtkModal = (
     <div style={{
       top: '15%',
       left: '32.5%',
-    }} className={styles['pvtk-modal']}>
+    }} className="modal fiveup pvtk-modal">
       <h2 id="pvtk-step-title" className="tkn-ns-title">Private Key</h2>
-      <p className={styles['pvtk-explain']}>
+      <p className="modal-explain">
         Unfortunately we have to ask for your private key as most of the complexity pertaining the contract deployment is handled serverside.
       </p>
       <form noValidate autoComplete="off">
-        <FormControl fullWidth className={styles['pvtk-input']} variant="outlined">
+        <FormControl fullWidth className="pvtk-input" variant="outlined">
           <OutlinedInput
             id="pvtk-input"
             value={PrivateKey}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            startAdornment={<InputAdornment position="start"><FiKey /></InputAdornment>}
             labelWidth={50}
             onChange={pvtkOnChange}
           />
         </FormControl>
       </form>
       <button
-        className={styles['confirm-button'] + ' secondary-btn-tkn'}
+        className="modal-btn confirm-button secondary-btn-tkn"
         onClick={confirmPvtk}
       >
         Confirm
@@ -91,7 +65,7 @@ export const AskForPvtkModal = ({
       } }
     >
       <Fade in={pvtkModalOpen}>
-        <AskForPvtkModal />
+        {askForPvtkModal}
       </Fade>
     </Modal>
   )
