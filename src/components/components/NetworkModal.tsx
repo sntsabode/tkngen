@@ -1,33 +1,21 @@
-import { Backdrop, createStyles, Fade, Grid } from '@material-ui/core'
-import { Styles, modalStyle } from './__styles__'
-import { makeStyles } from '@material-ui/styles'
+import { Backdrop, Fade, Grid } from '@material-ui/core'
 import Modal from '@material-ui/core/Modal'
 import { SwitchButton } from './utils/Switch'
 import Typography from '@material-ui/core/Typography'
-
-const modalStyles = makeStyles(() => createStyles({
-  'network-modal': Styles['modal'] as any,
-  'network-modal-deploy-btn': {
-    ...Styles['modal-btn'] as any,
-    marginTop: '2rem'
-  },
-
-  'network-explain': {
-    color: 'black',
-    fontSize: '11pt',
-    margin: '2rem 2rem'
-  }
-}))
 
 interface INetworkModal {
   networkModalOpen: boolean
   networks: {
     netOne: {
-      net: 'MAINNET' | 'BINANCESMARTCHAIN'
+      net: 'MAINNET' | 'BSC'
       checked: boolean
     }
     netTwo: {
-      net: 'KOVAN' | 'BINANCESMARTCHAIN_TEST'
+      net: 'KOVAN' | 'BSC Test Net'
+      checked: boolean
+    }
+    netThree: {
+      net: 'ETH FORK' | 'BSC FORK'
       checked: boolean
     }
   }
@@ -35,23 +23,24 @@ interface INetworkModal {
   onChange: (
     event: React.ChangeEvent,
     newNet: string,
-    net: 'netOneChecked' | 'netTwoChecked'
+    net: 'netOneChecked' | 'netTwoChecked' | 'netThreeChecked'
   ) => void
   deployToken: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => Promise<void>
 }
 
-export const NetworkModal = ({
+export function NetworkModal({
   networkModalOpen, setOpenClose,
   networks, onChange, deployToken
-}: INetworkModal) => {
-  const styles = modalStyles()
-
-  const NetworkModal = () => (
-    <div style={modalStyle} className={styles['network-modal']}>
+}: INetworkModal) {
+  const networkModal = (
+    <div style={ {
+      top: '15%',
+      left: '32.5%',
+    } } className="modal fiveup">
       <h2 id="network-step-title" className="tkn-ns-title">Network</h2>
-      <p className={styles['network-explain']}>Select the network you want your token deployed on.</p>
+      <p className="modal-explain">Select the network you want your token deployed on.</p>
       <div className="network-switches-container">
         <Typography component="div">
           <Grid component="label" container alignItems="center" spacing={1}>
@@ -82,8 +71,24 @@ export const NetworkModal = ({
           </Grid>
         </Typography>
       </div>
+      <div className="network-exper-switch">
+        <Typography component="div">
+          <Grid component="label" container alignItems="center" spacing={1}>
+            <Grid item className="switch-label">{networks.netThree.net}</Grid>
+            <Grid item>
+              <SwitchButton
+                checked={networks.netThree.checked}
+                onChange={(event) => {
+                  onChange(event, networks.netThree.net, 'netThreeChecked')
+                }}
+                name="mintable-check"
+              />
+            </Grid>
+          </Grid>
+        </Typography>
+      </div>
       <button
-        className={styles['network-modal-deploy-btn'] + ' secondary-btn-tkn'}
+        className="modal-btn confirm-button secondary-btn-tkn"
         onClick={deployToken}
       >Deploy!</button>
     </div>
@@ -104,7 +109,7 @@ export const NetworkModal = ({
       } }
     >
       <Fade in={networkModalOpen}>
-        <NetworkModal />
+        {networkModal}
       </Fade>
     </Modal>
   )
