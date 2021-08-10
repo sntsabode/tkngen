@@ -12,6 +12,7 @@ import { NotificationSnackBars } from './components/NotificationSnackBars'
 import { IAppState, IRequestBody, SupportedNetwork } from './IApp'
 import { GrStatusGoodSmall } from 'react-icons/gr'
 import { BiMenuAltLeft } from 'react-icons/bi'
+import { ToastContainer, toast } from 'react-toastify'
 
 const TopNav = ({
   connectWeb3, Web3Status, openCloseSidebar
@@ -67,20 +68,21 @@ export class App extends React.Component<{}, IAppState> {
     URL: URLs.ERC20,
     ERCComp: true,
     BEPComp: false,
-    MintableChecked: false,
-    BurnableChecked: true,
+    mintableChecked: false,
+    burnableChecked: true,
     TokenName: '',
     TokenSymbol: '',
     Decimals: 18,
     TotalSupply: 100000,
-    TokenNameSymModalOpen: false,
-    NetworkModalOpen: false,
-    LoadingModalOpen: false,
-    PvtkModalOpen: false,
+    tokenNameSymModalOpen: false,
+    networkModalOpen: false,
+    loadingModalOpen: false,
+    pvtkModalOpen: false,
     PrivateKey: '',
     Network: 'KOVAN' as SupportedNetwork,
     netOneChecked: false,
     netTwoChecked: false,
+    netThreeChecked: false,
     Web3Status: '#ff4444', // red
     tokenType: 'ERC20' as 'ERC20' | 'BEP20',
     successSnackOpen: false,
@@ -88,21 +90,34 @@ export class App extends React.Component<{}, IAppState> {
     infoSnackOpen: false,
     enterPvtkSnackOpen: false,
     enteredPrivateKeySnackOpen: false,
+    forgotTknNameSymSnackOpen: false,
     sidebarOpen: false,
     pvtk: ''
   }
 
   deployToken = async () => {
+    if (!this.deployToken_.checkParams()) return
+
+    let dontAutoOpenPvtkModal = false
+
+    this.handlers.handlepvtkModalOpenClose = (which: boolean) => {
+      dontAutoOpenPvtkModal = true
+      this.setState({
+        ...this.state, pvtkModalOpen: which
+      })
+    }
     try {
       if (!this.state.pvtk) {
         this.setState({
-          ...this.state, NetworkModalOpen: false,
+          ...this.state, networkModalOpen: false,
           enterPvtkSnackOpen: true
         })
 
-        setTimeout(() => this.setState({
-          ...this.state, PvtkModalOpen: true
-        }), 11000)
+        setTimeout(() => this.state.pvtkModalOpen
+          ? {} : dontAutoOpenPvtkModal ? {} : this.setState({
+            ...this.state, pvtkModalOpen: true
+          }), 10000)
+        
         return
       }
 
@@ -110,8 +125,8 @@ export class App extends React.Component<{}, IAppState> {
 
       this.setState({
         ...this.state,
-        NetworkModalOpen: false,
-        LoadingModalOpen: true
+        networkModalOpen: false,
+        loadingModalOpen: true
       })
 
       const res = await this.deployToken_.sendRequest(url)
@@ -119,19 +134,37 @@ export class App extends React.Component<{}, IAppState> {
 
       console.log(res)
 
+      this.handlers.handlepvtkModalOpenClose = (which: boolean) => {
+        this.setState({
+          ...this.state, pvtkModalOpen: which
+        })
+      }
+
       this.deployToken_.redirectUser(redirectUrl)
     } catch (e) {
-      console.error(e)
+      console.log(e.response.data)
       this.setState({
-        ...this.state, LoadingModalOpen: false, errorSnackOpen: true
+        ...this.state, loadingModalOpen: false, errorSnackOpen: true
       })
+
+      setTimeout(() => {
+        e.response.data.err.errors.forEach((err: any) => {
+          toast.error(err.msg, {
+            position: 'top-left'
+          })
+        })
+
+        this.setState({
+          ...this.state, errorSnackOpen: false
+        })
+      }, 1000)
     }
   }
 
   readonly deployToken_ = {
     redirectUser: (redirectUrl: string) => {
       this.setState({
-        ...this.state, LoadingModalOpen: false
+        ...this.state, loadingModalOpen: false
       })
   
       setTimeout(() => this.setState({
@@ -144,11 +177,11 @@ export class App extends React.Component<{}, IAppState> {
     },
 
     determineUrlPath: () => {
-      if (this.state.MintableChecked && !this.state.BurnableChecked)
-        return this.state.URL + ''
-      else if (this.state.BurnableChecked && !this.state.MintableChecked)
-        return this.state.URL + ''
-      else if (this.state.MintableChecked && this.state.BurnableChecked)
+      if (this.state.mintableChecked && !this.state.burnableChecked)
+        return this.state.URL + 'Mintable'
+      else if (this.state.burnableChecked && !this.state.mintableChecked)
+        return this.state.URL + 'Burnable'
+      else if (this.state.mintableChecked && this.state.burnableChecked)
         return this.state.URL + 'MintableBurnable'
       else return this.state.URL + 'Standard'
     },
@@ -174,9 +207,25 @@ export class App extends React.Component<{}, IAppState> {
           return 'BINANCESMARTCHAIN_TEST'
         else if ((this.state.Network as string) === 'BSC')
           return 'BINANCESMARTCHAIN'
+        else if ((this.state.Network as string) === 'ETH FORK')
+          return 'MAINNET_FORK'
+        else if ((this.state.Network as string) === 'BSC FORK')
+          return 'BINANCESMARTCHAIN_FORK'
         else return this.state.Network
       })()
-    })
+    }),
+
+    checkParams: (): boolean => {
+      if (!this.state.TokenName || !this.state.TokenSymbol) {
+        this.setState({
+          ...this.state, networkModalOpen: false, forgotTknNameSymSnackOpen: true
+        })
+
+        return false
+      }
+
+      return true
+    }
   }
 
   readonly connectWeb3 = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -189,7 +238,7 @@ export class App extends React.Component<{}, IAppState> {
     this.setState({
       ...this.state, Web3Status: '#00C851' // green
     })
-    this.handlers.handlePvtkModalOpenClose(true)
+    this.handlers.handlepvtkModalOpenClose(true)
   }
 
   readonly render = () => {
@@ -218,13 +267,11 @@ export class App extends React.Component<{}, IAppState> {
                 this.setState({
                   ...this.state, sidebarOpen: false
                 })
-
-                console.log('llll')
               }}
             />
             <MainDiv
-              mintableChecked={this.state.MintableChecked}
-              burnableChecked={this.state.BurnableChecked}
+              mintableChecked={this.state.mintableChecked}
+              burnableChecked={this.state.burnableChecked}
               handleSwitchChange={this.handlers.handleSwitchChange}
               handleSliderChange={this.handlers.handleSliderChange}
               ERCComp={this.state.ERCComp}
@@ -232,38 +279,43 @@ export class App extends React.Component<{}, IAppState> {
               openTknNameSymModal={(event) => {
                 event.preventDefault()
                 console.log(this.deployToken_.determineUrlPath())
-                this.handlers.handleTokenNameSymModalOpenClose(true)
+                this.handlers.handletokenNameSymModalOpenClose(true)
               }}
               Web3Status={this.state.Web3Status}
               connectWeb3={this.connectWeb3}
             />
             <TokenNameSymbolModal
-              modalOpen={this.state.TokenNameSymModalOpen}
-              setOpenClose={this.handlers.handleTokenNameSymModalOpenClose}
+              modalOpen={this.state.tokenNameSymModalOpen}
+              setOpenClose={this.handlers.handletokenNameSymModalOpenClose}
               handleOnchange={this.handlers.handleTknNameSymOnChange}
               TokenName={this.state.TokenName}
               TokenSymbol={this.state.TokenSymbol}
               onClick={(event) => {
                 event.preventDefault()
-                this.handlers.handleTokenNameSymModalOpenClose(false)
+                this.handlers.handletokenNameSymModalOpenClose(false)
                 setTimeout(
-                  () => this.handlers.handleNetworkModalOpenClose(true),
+                  () => this.handlers.handlenetworkModalOpenClose(true),
                   200
                 )
               }}
             />
             <NetworkModal
-              networkModalOpen={this.state.NetworkModalOpen}
-              setOpenClose={this.handlers.handleNetworkModalOpenClose}
+              networkModalOpen={this.state.networkModalOpen}
+              setOpenClose={this.handlers.handlenetworkModalOpenClose}
               networks={ {
                 netOne: {
-                  net: this.state.ERCComp ? 'MAINNET' : 'BSC' as any,
+                  net: this.state.ERCComp ? 'MAINNET' : 'BSC',
                   checked: this.state.netOneChecked
                 },
 
                 netTwo: {
-                  net: this.state.ERCComp ? 'KOVAN' : 'BSC Test Net' as any,
+                  net: this.state.ERCComp ? 'KOVAN' : 'BSC Test Net',
                   checked: this.state.netTwoChecked
+                },
+
+                netThree: {
+                  net: this.state.ERCComp ? 'ETH FORK' : 'BSC FORK',
+                  checked: this.state.netThreeChecked
                 }
               } }
               onChange={this.handlers.handleNetworkChange}
@@ -273,34 +325,33 @@ export class App extends React.Component<{}, IAppState> {
               } }
             />
             <AskForPvtkModal
-              pvtkModalOpen={this.state.PvtkModalOpen}
-              setOpenClose={this.handlers.handlePvtkModalOpenClose}
-              pvtkOnChange={(event) => {
-                this.setState({
-                  ...this.state, PrivateKey: event.target.value
-                })
-              }}
+              pvtkModalOpen={this.state.pvtkModalOpen}
+              setOpenClose={this.handlers.handlepvtkModalOpenClose}
+              pvtkOnChange={(event) => this.setState({
+                ...this.state, PrivateKey: event.target.value
+              })}
               PrivateKey={this.state.PrivateKey}
               confirmPvtk={this.handlers.confirmPvtk}
             />
             <LoadingModal
-              loadingModalOpen={this.state.LoadingModalOpen}
+              loadingModalOpen={this.state.loadingModalOpen}
             />
             <NotificationSnackBars
               successSnackOpen={this.state.successSnackOpen}
+              forgotTknNameSymSnackOpen={this.state.forgotTknNameSymSnackOpen}
               errorSnackOpen={this.state.errorSnackOpen}
               tokenType={this.state.tokenType}
               infoSnackOpen={this.state.infoSnackOpen}
-              handleClose={(which: 'successSnackOpen' | 'errorSnackOpen' | 'infoSnackOpen' | 'enterPvtkSnackOpen' | 'enteredPrivateKeySnackOpen') => () => {
-                this.setState({
-                  ...this.state, [which]: false
-                })
-              }}
+              handleClose={(which: 'successSnackOpen' | 'errorSnackOpen' | 'infoSnackOpen' | 'enterPvtkSnackOpen' | 'enteredPrivateKeySnackOpen' | 'forgotTknNameSymSnackOpen') => 
+              () => this.setState({
+                ...this.state, [which]: false
+              })}
               enterPvtkSnackOpen={this.state.enterPvtkSnackOpen}
               enteredPrivateKeySnackOpen={this.state.enteredPrivateKeySnackOpen}
             />
           </div>
         </section>
+        <ToastContainer />
         <Circles />
       </main>
     )
@@ -337,7 +388,7 @@ export class App extends React.Component<{}, IAppState> {
 
     handleSwitchChange: (
       event: React.ChangeEvent<HTMLInputElement>,
-      which: 'MintableChecked' | 'BurnableChecked'
+      which: 'mintableChecked' | 'burnableChecked'
     ) => {
       event.preventDefault()
       this.setState({
@@ -356,11 +407,11 @@ export class App extends React.Component<{}, IAppState> {
       })
     },
 
-    handleTokenNameSymModalOpenClose: (
+    handletokenNameSymModalOpenClose: (
       which: boolean
     ) => {
       this.setState({
-        ...this.state, TokenNameSymModalOpen: which
+        ...this.state, tokenNameSymModalOpen: which
       })
     },
 
@@ -372,37 +423,56 @@ export class App extends React.Component<{}, IAppState> {
       })
     },
 
-    handleNetworkModalOpenClose: (which: boolean) => {
+    handlenetworkModalOpenClose: (which: boolean) => {
       this.setState({
-        ...this.state, NetworkModalOpen: which
+        ...this.state, networkModalOpen: which
       })
     },
 
     handleNetworkChange: (
       event: React.ChangeEvent, newNet: string,
-      net: 'netOneChecked' | 'netTwoChecked'
-    ) => {
-      const bool = this.state[net] ? false : true
-      if (net === 'netOneChecked') {
-        this.setState({
-          ...this.state, Network: newNet as SupportedNetwork,
-          netOneChecked: bool,
-          netTwoChecked: !bool
-        })
-      }
+      net: 'netOneChecked' | 'netTwoChecked' | 'netThreeChecked'
+    ) => ({
+      netOneChecked: () => (this.state.netOneChecked) ? this.setState({
+        ...this.state, Network: newNet as SupportedNetwork,
+        netOneChecked: false,
+        netTwoChecked: false,
+        netThreeChecked: false
+      }) : this.setState({
+        ...this.state, Network: newNet as SupportedNetwork,
+        netOneChecked: true,
+        netTwoChecked: false,
+        netThreeChecked: false
+      }),
 
-      else {
-        this.setState({
-          ...this.state, Network: newNet as SupportedNetwork,
-          netTwoChecked: bool,
-          netOneChecked: !bool
-        })
-      }
-    },
+      netTwoChecked: () => (this.state.netTwoChecked) ? this.setState({
+        ...this.state, Network: newNet as SupportedNetwork,
+        netOneChecked: false,
+        netTwoChecked: false,
+        netThreeChecked: false
+      }) : this.setState({
+        ...this.state, Network: newNet as SupportedNetwork,
+        netOneChecked: false,
+        netTwoChecked: true,
+        netThreeChecked: false
+      }),
 
-    handlePvtkModalOpenClose: (which: boolean) => {
+      netThreeChecked: () => (this.state.netThreeChecked) ? this.setState({
+        ...this.state, Network: newNet as SupportedNetwork,
+        netOneChecked: false,
+        netTwoChecked: false,
+        netThreeChecked: false
+      }) : this.setState({
+        ...this.state, Network: newNet as SupportedNetwork,
+        netOneChecked: false,
+        netTwoChecked: false,
+        netThreeChecked: true
+      })
+    })[net](),
+
+    handlepvtkModalOpenClose: (which: boolean) => {
       this.setState({
-        ...this.state, PvtkModalOpen: which
+        ...this.state, pvtkModalOpen: which
       })
     },
 
@@ -410,15 +480,17 @@ export class App extends React.Component<{}, IAppState> {
       event.preventDefault()
       const pvt = '•••••••••••••••'
 
-      this.setState({
-        ...this.state, pvtk: this.state.PrivateKey, PrivateKey: pvt
-      })
+      if (this.state.PrivateKey !== '•••••••••••••••') {
+        this.setState({
+          ...this.state, pvtk: this.state.PrivateKey, PrivateKey: pvt
+        })
+      }
 
       setTimeout(() => {
         this.setState({
-          ...this.state, PvtkModalOpen: false, enteredPrivateKeySnackOpen: true
+          ...this.state, pvtkModalOpen: false, enteredPrivateKeySnackOpen: true
         })
-      }, 2000)
+      }, 800)
     }
   })
 }

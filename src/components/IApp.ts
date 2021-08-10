@@ -1,7 +1,9 @@
 export type SupportedNetwork =
   | 'MAINNET'
+  | 'MAINNET_FORK'
   | 'KOVAN'
   | 'BINANCESMARTCHAIN'
+  | 'BINANCESMARTCHAIN_FORK'
   | 'BINANCESMARTCHAIN_TEST'
 
 export interface IRequestBody {
@@ -19,15 +21,15 @@ interface IActiveComponent {
 }
 
 interface IModalsOpen {
-  TokenNameSymModalOpen: boolean
-  NetworkModalOpen: boolean
-  PvtkModalOpen: boolean
-  LoadingModalOpen: boolean
+  tokenNameSymModalOpen: boolean
+  networkModalOpen: boolean
+  pvtkModalOpen: boolean
+  loadingModalOpen: boolean
 }
 
 interface IMintableBurnableChecked {
-  MintableChecked: boolean
-  BurnableChecked: boolean
+  mintableChecked: boolean
+  burnableChecked: boolean
 }
 
 interface IRequestData {
@@ -42,6 +44,7 @@ interface IRequestData {
 interface INetworkSwitchChecked {
   netOneChecked: boolean
   netTwoChecked: boolean
+  netThreeChecked: boolean
 }
 
 interface ISnacksOpen {
@@ -50,6 +53,7 @@ interface ISnacksOpen {
   infoSnackOpen: boolean
   enterPvtkSnackOpen: boolean
   enteredPrivateKeySnackOpen: boolean
+  forgotTknNameSymSnackOpen: boolean
 }
 
 export type IAppState = IActiveComponent
