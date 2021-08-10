@@ -43,7 +43,7 @@ export const NotificationSnackBars = ({
         { vertical: 'top', horizontal: 'center' }
       } open={successSnackOpen} autoHideDuration={6000} onClose={handleClose('successSnackOpen')}>
         <Alert onClose={handleClose('successSnackOpen')} severity="success">
-          Successfuly deployed your {tokenType} token! 🎉💃💃
+          Successfully deployed your {tokenType} token! 🎉💃💃
         </Alert>
       </Snackbar>
       <Snackbar anchorOrigin={
@@ -71,7 +71,7 @@ export const NotificationSnackBars = ({
         { vertical: 'top', horizontal: 'center' }
       } open={enteredPrivateKeySnackOpen} autoHideDuration={9000} onClose={handleClose('enteredPrivateKeySnackOpen')}>
         <Alert onClose={handleClose('enteredPrivateKeySnackOpen')} severity="warning">
-          You have entered your private key. We hope this is a test net key and not a real private key. For your safety we recommend not using this service for mainnet deployments.
+          You have successfully entered your private key. We hope this is a test net key and not a real private key. For your safety we recommend not using this service for mainnet deployments.
         </Alert>
       </Snackbar>
       <Snackbar anchorOrigin={
