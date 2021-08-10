@@ -61,7 +61,7 @@ export const TokenNameSymbolModal = ({
 }: ITokenNameSymbolModal) => {
   const styles = modalStyles()
 
-  const TokenNameSymbolModal = () => (
+  const tokenNameSymbolModal = (
     <div style={modalStyle} className={styles['token-name-sym-modal']}>
       <h2 id="metadata-step-title" className="tkn-ns-title">Meta Data</h2>
       <form className={styles['tkn-name-sym-inputs']} noValidate autoComplete="off">
@@ -111,7 +111,7 @@ export const TokenNameSymbolModal = ({
       } }
     >
       <Fade in={modalOpen}>
-        <TokenNameSymbolModal />
+        {tokenNameSymbolModal}
       </Fade>
     </Modal>
   )
