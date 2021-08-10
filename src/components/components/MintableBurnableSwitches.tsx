@@ -7,7 +7,7 @@ export interface IMintableBurnableSwitches {
   mintableChecked: boolean
   handleSwitchChange: (
     event: React.ChangeEvent<HTMLInputElement>,
-    which: 'MintableChecked' | 'BurnableChecked'
+    which: 'mintableChecked' | 'burnableChecked'
   ) => void
   burnableChecked: boolean  
 }
@@ -25,7 +25,7 @@ export const MintableBurnableSwitches = ({
           <SwitchButton
             checked={mintableChecked}
             onChange={(event) => {
-              handleSwitchChange(event, 'MintableChecked')
+              handleSwitchChange(event, 'mintableChecked')
             }}
             name="mintable-check"
           />
@@ -38,7 +38,7 @@ export const MintableBurnableSwitches = ({
           <SwitchButton
             checked={burnableChecked}
             onChange={(event) => {
-              handleSwitchChange(event, 'BurnableChecked')
+              handleSwitchChange(event, 'burnableChecked')
             }}
             name="burnable-check"
           />
