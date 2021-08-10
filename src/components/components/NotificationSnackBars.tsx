@@ -18,6 +18,7 @@ interface INotificationSnackBars {
   infoSnackOpen: boolean
   enterPvtkSnackOpen: boolean
   enteredPrivateKeySnackOpen: boolean
+  forgotTknNameSymSnackOpen: boolean
   tokenType: 'ERC20' | 'BEP20'
   handleClose: (
     which:
@@ -26,11 +27,12 @@ interface INotificationSnackBars {
       | 'infoSnackOpen'
       | 'enterPvtkSnackOpen'
       | 'enteredPrivateKeySnackOpen'
+      | 'forgotTknNameSymSnackOpen'
   ) => () => void
 }
 
 export const NotificationSnackBars = ({
-  successSnackOpen, errorSnackOpen, enterPvtkSnackOpen,
+  successSnackOpen, errorSnackOpen, enterPvtkSnackOpen, forgotTknNameSymSnackOpen,
   tokenType, handleClose, infoSnackOpen, enteredPrivateKeySnackOpen
 }: INotificationSnackBars) => {
   const classes = useStyles()
@@ -70,6 +72,13 @@ export const NotificationSnackBars = ({
       } open={enteredPrivateKeySnackOpen} autoHideDuration={9000} onClose={handleClose('enteredPrivateKeySnackOpen')}>
         <Alert onClose={handleClose('enteredPrivateKeySnackOpen')} severity="warning">
           You have entered your private key. We hope this is a test net key and not a real private key. For your safety we recommend not using this service for mainnet deployments.
+        </Alert>
+      </Snackbar>
+      <Snackbar anchorOrigin={
+        { vertical: 'top', horizontal: 'center' }
+      } open={forgotTknNameSymSnackOpen} autoHideDuration={9000} onClose={handleClose('forgotTknNameSymSnackOpen')}>
+        <Alert onClose={handleClose('forgotTknNameSymSnackOpen')} severity="error">
+          Uh oh. You forgot to enter the name and symbol for your {tokenType} token.
         </Alert>
       </Snackbar>
     </div>
