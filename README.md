@@ -6,6 +6,9 @@ Create and deploy BEP20 / ERC20 tokens with a click of a button...
 
 The *tkngen client* builds on top of the [tkngen-api](https://github.com/sntsabode/tkngen-api). For a full and comprehensive explanation of all the features and caveats of the app please see *tkngen-api's* [documentation](https://github.com/sntsabode/tkngen-api#readme).
 
+> <img src="./misc/sc1.gif" alt=""/>
+> <img src="./misc/sc2.gif" alt=""/>
+
 <br/>
 
 ### Features
@@ -52,13 +55,6 @@ The *tkngen client* builds on top of the [tkngen-api](https://github.com/sntsabo
 <br/>
 
 If you plan on deploying to mainnet ***(not recommended)*** we'd recommend using local instances of the tkngen-api client & server and not using the demo production builds *(although the demo production builds are capable of mainnet deployments)*. For a guide on how to do this, please see *tkngen-api's* [documentation](https://github.com/sntsabode/tkngen-api#readme).
-
-<br/>
-
-> <img src="./misc/sc1.gif" alt=""/>
-> <img src="./misc/sc2.gif" alt=""/>
-
-<br/>
 
 ## Quick Guide
 
