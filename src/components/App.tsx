@@ -79,7 +79,7 @@ export class App extends React.Component<{}, IAppState> {
     loadingModalOpen: false,
     pvtkModalOpen: false,
     PrivateKey: '',
-    Network: 'KOVAN' as SupportedNetwork,
+    Network: '' as SupportedNetwork,
     netOneChecked: false,
     netTwoChecked: false,
     netThreeChecked: false,
@@ -96,7 +96,21 @@ export class App extends React.Component<{}, IAppState> {
   }
 
   deployToken = async () => {
-    if (!this.deployToken_.checkParams()) return
+    if (!this.deployToken_.checkParams()) {
+      if (!this.state.tokenNameSymModalOpen) setTimeout(() => this.setState({
+        ...this.state, tokenNameSymModalOpen: true
+      }), 2000)
+
+      return
+    }
+    
+    if (!this.state.Network) {
+      toast.error('Please select a network', {
+        position: 'top-left'
+      })
+
+      return
+    }
 
     let dontAutoOpenPvtkModal = false
 
@@ -147,7 +161,7 @@ export class App extends React.Component<{}, IAppState> {
         ...this.state, loadingModalOpen: false, errorSnackOpen: true
       })
 
-      setTimeout(() => {
+      if (e.response.data.err) setTimeout(() => {
         e.response.data.err.errors.forEach((err: any) => {
           toast.error(err.msg, {
             position: 'top-left'
@@ -156,6 +170,16 @@ export class App extends React.Component<{}, IAppState> {
 
         this.setState({
           ...this.state, errorSnackOpen: false
+        })
+      }, 1000)
+
+      else if (e.response.data.e) setTimeout(() => {
+        this.setState({
+          ...this.state, errorSnackOpen: false
+        })
+
+        toast.error(e.response.data.e, {
+          position: 'top-left'
         })
       }, 1000)
     }
