@@ -7,7 +7,9 @@ Create and deploy BEP20 / ERC20 tokens with a click of a button...
 The *tkngen client* builds on top of the [tkngen-api](https://github.com/sntsabode/tkngen-api). For a full and comprehensive explanation of all the features and caveats of the app please see *tkngen-api's* [documentation](https://github.com/sntsabode/tkngen-api#readme).
 
 > <img src="./misc/sc1.gif" alt=""/>
+> *(Part 1)*
 > <img src="./misc/sc2.gif" alt=""/>
+> *(Part 2)*
 
 <br/>
 
@@ -17,7 +19,7 @@ The *tkngen client* builds on top of the [tkngen-api](https://github.com/sntsabo
   
   * ***Standard*** *(No mint or burn functions)*
 
-  * ***Mintable*** *(mint fnuction)*
+  * ***Mintable*** *(mint function)*
 
   * ***Burnable*** *(burn function)*
 
@@ -25,13 +27,13 @@ The *tkngen client* builds on top of the [tkngen-api](https://github.com/sntsabo
 
 * Token configuration options
 
-  * `Token Name`: *string* your token's name *(the value ui's show as your token's name e.g bscscan, etherscan)*.
+  * `Token Name`: *string* -- your token's name *(the value ui's show as your token's name e.g bscscan, etherscan)*.
 
-  * `Token Symbol`: *string* your token's symbol *(the value ui's show as your token's symbol e.g etherscan, bscscan)*.
+  * `Token Symbol`: *string* -- your token's symbol *(the value ui's show as your token's symbol e.g etherscan, bscscan)*.
 
-  * `Decimals`: *number* your token's decimals *([an ethereum thing](https://docs.openzeppelin.com/contracts/3.x/erc20#a-note-on-decimals))*.
+  * `Decimals`: *number* -- your token's decimals *([an ethereum thing](https://docs.openzeppelin.com/contracts/3.x/erc20#a-note-on-decimals))*.
 
-  * `Total Supply`: *number* the amount of your tokens minted during the deployment. The amount is sent to the entered wallet address.
+  * `Total Supply`: *number* -- the amount of your tokens minted during the deployment. The amount is sent to the entered wallet address.
 
 * Supported Networks
 
