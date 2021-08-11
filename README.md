@@ -4,7 +4,50 @@ Create and deploy BEP20 / ERC20 tokens with a click of a button...
 
 ### tkngen
 
-The *tkngen client* builds on top of the [tkngen-api](https://github.com/sntsabode/tkngen-api). For a full and comprehensive explanation of all the features and caveats of the service please see *tkngen-api's* [documentation](https://github.com/sntsabode/tkngen-api#readme).
+The *tkngen client* builds on top of the [tkngen-api](https://github.com/sntsabode/tkngen-api). For a full and comprehensive explanation of all the features and caveats of the app please see *tkngen-api's* [documentation](https://github.com/sntsabode/tkngen-api#readme).
+
+<br/>
+
+### Features
+
+* `ERC20` / `BEP20` Token Type
+  
+  * ***Standard*** *(No mint or burn functions)*
+
+  * ***Mintable*** *(mint fnuction)*
+
+  * ***Burnable*** *(burn function)*
+
+  * ***MintableBurnable*** *(mint and burn functions)*
+
+* Token configuration options
+
+  * `Token Name`: *string* your token's name *(the value ui's show as your token's name e.g bscscan, etherscan)*.
+
+  * `Token Symbol`: *string* your token's symbol *(the value ui's show as your token's symbol e.g etherscan, bscscan)*.
+
+  * `Decimals`: *number* your token's decimals *([an ethereum thing](https://docs.openzeppelin.com/contracts/3.x/erc20#a-note-on-decimals))*.
+
+  * `Total Supply`: *number* the amount of your tokens minted during the deployment. The amount is sent to the entered wallet address.
+
+* Supported Networks
+
+  * `BEP20`
+
+    * ***Binance Smart Chain Mainnet***
+
+    * ***Binance Smart Chain Testnet***
+
+    * ***Binance Smart Chain Mainnet fork (dry run, only available on local instances of the tkngen-api.)***
+
+
+  * `ERC20`
+
+    * ***Mainnet***
+
+    * ***Kovan***
+
+    * ***Mainnet fork (dry run, only available on local instances of the tkngen-api.)***
 
 <br/>
 
@@ -23,13 +66,13 @@ If you plan on deploying to mainnet ***(not recommended)*** we'd recommend using
 
 > ### Prerequisites
 >
-> * ### MetaMask
-> * ### Account with Ether on the desired network
+> * ***MetaMask***
+> * ***Account with Ether on the desired network***
 
 <br/>
 
 > ### Step ∞
-> * ### Follow the gifs 😉
+> * ***Follow the gifs 😉***
 
 <br/>
 
