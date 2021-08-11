@@ -71,13 +71,13 @@ const GenTokenLinks = ({
 )
 
 const GithubBadge = () => (
-  <div className="github-credits btn-gradient">
+  <a style={{ textDecoration: 'none' }} href="https://github.com/sntsabode/tkngen" className="github-credits btn-gradient">
     <h3>Check it out on Github</h3>
     <AiFillGithub className="github-logo" style={ {
       width: '4rem',
       height: '4rem'
     } }/>
-  </div>
+  </a>
 )
 
 export const Sidebar = ({
