@@ -9,11 +9,6 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import { Styles } from './__styles__'
 import React from 'react'
 
-const modalStyle = {
-  top: '20%',
-  left: '32.5%',
-}
-
 const modalStyles = makeStyles(() => createStyles({
   'token-name-sym-modal': Styles['modal'] as any,
 
@@ -28,7 +23,8 @@ const modalStyles = makeStyles(() => createStyles({
     margin: '2rem 2rem',
     '& :hover': {
       borderColor: '#bfbfbf'
-    }
+    },
+
   },
 
   'tkn-input-box': {
@@ -62,7 +58,7 @@ export const TokenNameSymbolModal = ({
   const styles = modalStyles()
 
   const tokenNameSymbolModal = (
-    <div style={modalStyle} className={styles['token-name-sym-modal']}>
+    <div className="modal stan token-name-sym">
       <h2 id="metadata-step-title" className="tkn-ns-title">Meta Data</h2>
       <form className={styles['tkn-name-sym-inputs']} noValidate autoComplete="off">
         <FormControl fullWidth className={styles['tkn-input']} variant="outlined">
