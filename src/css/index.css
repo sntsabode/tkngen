@@ -267,6 +267,10 @@ main {
   height: 65%;
 }
 
+.modal.tenup {
+  height: 70%;
+}
+
 .modal-btn {
   width: 40%;
   height: 4rem;
