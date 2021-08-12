@@ -108,6 +108,10 @@ main {
   border-radius: 2rem;
 }
 
+.sidebar-header {
+  margin: 1rem 0rem;
+}
+
 .gen-token-link {
   display: flex;
   margin: 5rem 0rem;
@@ -400,6 +404,25 @@ main {
   justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+@media (max-height: 705px) {
+  .mintable-burnable-switches {
+    margin-top: 1rem;
+  }
+
+  .slider-comps {
+    margin: 3rem 2rem;
+  }
+
+  .deploy-token-comp.class2 {
+    margin-top: 3rem;
+  }
+
+  .gen-token-link {
+    margin: 3rem 0rem;
+    padding: 1rem 5rem;
+  }
 }
 
 @media (max-width: 1250px) {
