@@ -36,9 +36,9 @@ export function NetworkModal({
 }: INetworkModal) {
   const networkModal = (
     <div style={ {
-      top: '15%',
+      top: '12.5%',
       left: '32.5%',
-    } } className="modal fiveup">
+    } } className="modal tenup">
       <h2 id="network-step-title" className="tkn-ns-title">Network</h2>
       <p className="modal-explain">Select the network you want your token deployed on.</p>
       <div className="network-switches-container">
@@ -73,7 +73,10 @@ export function NetworkModal({
       </div>
       <div className="network-exper-switch">
         <Typography component="div">
-          <Grid component="label" container alignItems="center" spacing={1}>
+          <Grid component="label" style={{
+            display: 'flex',
+            flexDirection: 'column'
+          }} container alignItems="center" spacing={1}>
             <Grid item className="switch-label">{networks.netThree.net}</Grid>
             <Grid item>
               <SwitchButton
