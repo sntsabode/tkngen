@@ -2,6 +2,7 @@ import ETHLogo from '../imgs/eth-logo.png'
 import ETHGenTokenLogo from '../imgs/eth.png'
 import BSCGenTokenLogo from '../imgs/binance-logo.png'
 import { AiFillGithub } from 'react-icons/ai'
+
 const SidebarHeader = () => (
   <div className="sidebar-header">
     <img
