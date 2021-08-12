@@ -156,10 +156,11 @@ export class App extends React.Component<{}, IAppState> {
 
       this.deployToken_.redirectUser(redirectUrl)
     } catch (e) {
-      console.log(e.response.data)
       this.setState({
         ...this.state, loadingModalOpen: false, errorSnackOpen: true
       })
+
+      if (!e.response) return
 
       if (e.response.data.err) setTimeout(() => {
         e.response.data.err.errors.forEach((err: any) => {
