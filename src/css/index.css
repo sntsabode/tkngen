@@ -267,6 +267,11 @@ main {
   height: 60%;
 }
 
+.modal.token-name-sym {
+  top: 20%;
+  left: 32.5%;
+}
+
 .modal.fiveup {
   height: 65%;
 }
@@ -406,25 +411,6 @@ main {
   width: 100%;
 }
 
-@media (max-height: 705px) {
-  .mintable-burnable-switches {
-    margin-top: 1rem;
-  }
-
-  .slider-comps {
-    margin: 3rem 2rem;
-  }
-
-  .deploy-token-comp.class2 {
-    margin-top: 3rem;
-  }
-
-  .gen-token-link {
-    margin: 3rem 0rem;
-    padding: 1rem 5rem;
-  }
-}
-
 @media (max-width: 1250px) {
   .gen-token-link  {
     padding: 1rem 3rem;
@@ -452,6 +438,61 @@ main {
     );
     border-top-left-radius: 2rem;
     border-top-right-radius: 2rem;
+  }
+}
+
+@media (max-height: 728px) {
+  .modal.token-name-sym.stan {
+    top: 10%;
+    height: 65%;
+  }
+}
+
+@media (max-height: 705px) {
+  .mintable-burnable-switches {
+    margin-top: 1rem;
+  }
+
+  .slider-comps {
+    margin: 3rem 2rem;
+  }
+
+  .deploy-token-comp.class2 {
+    margin-top: 3rem;
+  }
+
+  .gen-token-link {
+    margin: 3rem 0rem;
+    padding: 1rem 5rem;
+  }
+}
+
+@media (max-height: 660px) {
+  .modal.token-name-sym.stan {
+    top: 10%;
+    height: 70%;
+  }  
+}
+
+@media (max-height: 600px) {
+  .modal.token-name-sym.stan {
+    top: 10%;
+    height: 80%;
+  }
+}
+
+@media (max-height: 540px) {
+  .modal.token-name-sym.stan {
+    top: 2.5%;
+    height: 95%;
+  }
+
+  .tkn-ns-title {
+    margin: 1rem;
+  }
+
+  .makeStyles-tkn-input-36 {
+    margin: 1rem 2rem;
   }
 }
 
