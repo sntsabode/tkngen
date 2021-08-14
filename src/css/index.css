@@ -417,8 +417,78 @@ main {
   }
 }
 
+.not-on-mobile-container {
+  height: 100vh;
+  background-color: #000000;
+  background-image: linear-gradient(
+    147deg,
+    #000000 0%,
+    #434343 74%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.not-on-mobile-container {
+  display: hidden;
+}
+
+.not-on-mobile-container > .glass {
+  background: white;
+  min-height: 95%;
+  max-height: 95%;
+  width: 90%;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.3)
+  );
+  border-radius: 2rem;
+  z-index: 3;
+  backdrop-filter: blur(2rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 2rem 2rem;
+}
+
+.not-on-mobile-container .github-credits {
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.3)
+  );
+  color: black;
+  -webkit-opacity: 0.7;
+  opacity: 0.7;
+}
+
+.not-on-mobile-container .github-credits:hover {
+  background-position: right center;
+  color: #121212;
+  -webkit-opacity: 0.2;
+  opacity: 0.2;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.not-on-mobile-container .github-credits h3 {
+  color: black;
+  -webkit-opacity: 0.7;
+  opacity: 0.7;
+}
+
+.not-on-mobile-container h1 {
+  color: black;
+  -webkit-opacity: 0.7;
+  opacity: 0.7;
+}
+
 @media (max-width: 950px) {
-  .glass {
+  /*.glass {
     min-height: 90vh;
     width: 90%;
     display: initial;
@@ -438,10 +508,17 @@ main {
     );
     border-top-left-radius: 2rem;
     border-top-right-radius: 2rem;
+  }*/
+  .main-container {
+    display: none !important;
+  }
+
+  .not-on-mobile-container {
+    display: flex !important;
   }
 }
 
-@media (max-height: 728px) {
+/*@media (max-height: 728px) {
   .modal.token-name-sym.stan {
     top: 10%;
     height: 65%;
@@ -494,7 +571,7 @@ main {
   .makeStyles-tkn-input-36 {
     margin: 1rem 2rem;
   }
-}
+}*/
 
 .menu-icon {
   width: 2rem;
@@ -544,5 +621,9 @@ main {
   
   .connect-web3-btn > p {
     letter-spacing: -1px;
+  }
+
+  .not-on-mobile-container h1 {
+    font-size: 2rem;
   }
 }
