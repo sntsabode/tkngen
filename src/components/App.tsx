@@ -47,8 +47,8 @@ async function sendRequest(url: string, body: IRequestBody) {
 }
 
 const URLs = {
-  ERC20: 'http://localhost:9000/ERC-20/',
-  BEP20: 'http://localhost:9000/BEP-20/'
+  ERC20: 'https://tkngen-api.herokuapp.com/ERC-20/',
+  BEP20: 'https://tkngen-api.herokuapp.com/BEP-20/'
 }
 
 const BlockExplorerURLs = {
