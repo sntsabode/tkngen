@@ -13,6 +13,7 @@ import { IAppState, IRequestBody, SupportedNetwork } from './IApp'
 import { GrStatusGoodSmall } from 'react-icons/gr'
 import { BiMenuAltLeft } from 'react-icons/bi'
 import { ToastContainer, toast } from 'react-toastify'
+import { NotAvailableOnMobile } from './components/NotAvailableOnMobile'
 
 const TopNav = ({
   connectWeb3, Web3Status, openCloseSidebar
@@ -268,117 +269,120 @@ export class App extends React.Component<{}, IAppState> {
 
   readonly render = () => {
     return (
-      <main>
-        <section className="glass">
-          <Sidebar
-            activeChange={this.handlers.activeChange}
-            ERCComp={this.state.ERCComp}
-            BEPComp={this.state.BEPComp}
-          />
-          <div className="container">
-            <TopNav
-              connectWeb3={this.connectWeb3}
-              Web3Status={this.state.Web3Status}
-              openCloseSidebar={(event) => {
-                if (!this.state.sidebarOpen) {
-                  document.getElementById('sidebar_')!.style.display = 'flex !important'
-                  this.setState({
-                    ...this.state, sidebarOpen: true
-                  })
-                  console.log('sidebar open')
-                }
-
-                document.getElementById('sidebar_')!.style.display = 'none !important'
-                this.setState({
-                  ...this.state, sidebarOpen: false
-                })
-              }}
-            />
-            <MainDiv
-              mintableChecked={this.state.mintableChecked}
-              burnableChecked={this.state.burnableChecked}
-              handleSwitchChange={this.handlers.handleSwitchChange}
-              handleSliderChange={this.handlers.handleSliderChange}
+      <>
+        <main className="main-container">
+          <section className="glass">
+            <Sidebar
+              activeChange={this.handlers.activeChange}
               ERCComp={this.state.ERCComp}
               BEPComp={this.state.BEPComp}
-              openTknNameSymModal={(event) => {
-                event.preventDefault()
-                console.log(this.deployToken_.determineUrlPath())
-                this.handlers.handletokenNameSymModalOpenClose(true)
-              }}
-              Web3Status={this.state.Web3Status}
-              connectWeb3={this.connectWeb3}
             />
-            <TokenNameSymbolModal
-              modalOpen={this.state.tokenNameSymModalOpen}
-              setOpenClose={this.handlers.handletokenNameSymModalOpenClose}
-              handleOnchange={this.handlers.handleTknNameSymOnChange}
-              TokenName={this.state.TokenName}
-              TokenSymbol={this.state.TokenSymbol}
-              onClick={(event) => {
-                event.preventDefault()
-                this.handlers.handletokenNameSymModalOpenClose(false)
-                setTimeout(
-                  () => this.handlers.handlenetworkModalOpenClose(true),
-                  200
-                )
-              }}
-            />
-            <NetworkModal
-              networkModalOpen={this.state.networkModalOpen}
-              setOpenClose={this.handlers.handlenetworkModalOpenClose}
-              networks={ {
-                netOne: {
-                  net: this.state.ERCComp ? 'MAINNET' : 'BSC',
-                  checked: this.state.netOneChecked
-                },
+            <div className="container">
+              <TopNav
+                connectWeb3={this.connectWeb3}
+                Web3Status={this.state.Web3Status}
+                openCloseSidebar={(event) => {
+                  if (!this.state.sidebarOpen) {
+                    document.getElementById('sidebar_')!.style.display = 'flex !important'
+                    this.setState({
+                      ...this.state, sidebarOpen: true
+                    })
+                    console.log('sidebar open')
+                  }
 
-                netTwo: {
-                  net: this.state.ERCComp ? 'KOVAN' : 'BSC Test Net',
-                  checked: this.state.netTwoChecked
-                },
+                  document.getElementById('sidebar_')!.style.display = 'none !important'
+                  this.setState({
+                    ...this.state, sidebarOpen: false
+                  })
+                }}
+              />
+              <MainDiv
+                mintableChecked={this.state.mintableChecked}
+                burnableChecked={this.state.burnableChecked}
+                handleSwitchChange={this.handlers.handleSwitchChange}
+                handleSliderChange={this.handlers.handleSliderChange}
+                ERCComp={this.state.ERCComp}
+                BEPComp={this.state.BEPComp}
+                openTknNameSymModal={(event) => {
+                  event.preventDefault()
+                  console.log(this.deployToken_.determineUrlPath())
+                  this.handlers.handletokenNameSymModalOpenClose(true)
+                }}
+                Web3Status={this.state.Web3Status}
+                connectWeb3={this.connectWeb3}
+              />
+              <TokenNameSymbolModal
+                modalOpen={this.state.tokenNameSymModalOpen}
+                setOpenClose={this.handlers.handletokenNameSymModalOpenClose}
+                handleOnchange={this.handlers.handleTknNameSymOnChange}
+                TokenName={this.state.TokenName}
+                TokenSymbol={this.state.TokenSymbol}
+                onClick={(event) => {
+                  event.preventDefault()
+                  this.handlers.handletokenNameSymModalOpenClose(false)
+                  setTimeout(
+                    () => this.handlers.handlenetworkModalOpenClose(true),
+                    200
+                  )
+                }}
+              />
+              <NetworkModal
+                networkModalOpen={this.state.networkModalOpen}
+                setOpenClose={this.handlers.handlenetworkModalOpenClose}
+                networks={ {
+                  netOne: {
+                    net: this.state.ERCComp ? 'MAINNET' : 'BSC',
+                    checked: this.state.netOneChecked
+                  },
 
-                netThree: {
-                  net: this.state.ERCComp ? 'ETH FORK' : 'BSC FORK',
-                  checked: this.state.netThreeChecked
-                }
-              } }
-              onChange={this.handlers.handleNetworkChange}
-              deployToken={async (event) => {
-                event.preventDefault()
-                return this.deployToken()
-              } }
-            />
-            <AskForPvtkModal
-              pvtkModalOpen={this.state.pvtkModalOpen}
-              setOpenClose={this.handlers.handlepvtkModalOpenClose}
-              pvtkOnChange={(event) => this.setState({
-                ...this.state, PrivateKey: event.target.value
-              })}
-              PrivateKey={this.state.PrivateKey}
-              confirmPvtk={this.handlers.confirmPvtk}
-            />
-            <LoadingModal
-              loadingModalOpen={this.state.loadingModalOpen}
-            />
-            <NotificationSnackBars
-              successSnackOpen={this.state.successSnackOpen}
-              forgotTknNameSymSnackOpen={this.state.forgotTknNameSymSnackOpen}
-              errorSnackOpen={this.state.errorSnackOpen}
-              tokenType={this.state.tokenType}
-              infoSnackOpen={this.state.infoSnackOpen}
-              handleClose={(which: 'successSnackOpen' | 'errorSnackOpen' | 'infoSnackOpen' | 'enterPvtkSnackOpen' | 'enteredPrivateKeySnackOpen' | 'forgotTknNameSymSnackOpen') => 
-              () => this.setState({
-                ...this.state, [which]: false
-              })}
-              enterPvtkSnackOpen={this.state.enterPvtkSnackOpen}
-              enteredPrivateKeySnackOpen={this.state.enteredPrivateKeySnackOpen}
-            />
-          </div>
-        </section>
-        <ToastContainer />
-        <Circles />
-      </main>
+                  netTwo: {
+                    net: this.state.ERCComp ? 'KOVAN' : 'BSC Test Net',
+                    checked: this.state.netTwoChecked
+                  },
+
+                  netThree: {
+                    net: this.state.ERCComp ? 'ETH FORK' : 'BSC FORK',
+                    checked: this.state.netThreeChecked
+                  }
+                } }
+                onChange={this.handlers.handleNetworkChange}
+                deployToken={async (event) => {
+                  event.preventDefault()
+                  return this.deployToken()
+                } }
+              />
+              <AskForPvtkModal
+                pvtkModalOpen={this.state.pvtkModalOpen}
+                setOpenClose={this.handlers.handlepvtkModalOpenClose}
+                pvtkOnChange={(event) => this.setState({
+                  ...this.state, PrivateKey: event.target.value
+                })}
+                PrivateKey={this.state.PrivateKey}
+                confirmPvtk={this.handlers.confirmPvtk}
+              />
+              <LoadingModal
+                loadingModalOpen={this.state.loadingModalOpen}
+              />
+              <NotificationSnackBars
+                successSnackOpen={this.state.successSnackOpen}
+                forgotTknNameSymSnackOpen={this.state.forgotTknNameSymSnackOpen}
+                errorSnackOpen={this.state.errorSnackOpen}
+                tokenType={this.state.tokenType}
+                infoSnackOpen={this.state.infoSnackOpen}
+                handleClose={(which: 'successSnackOpen' | 'errorSnackOpen' | 'infoSnackOpen' | 'enterPvtkSnackOpen' | 'enteredPrivateKeySnackOpen' | 'forgotTknNameSymSnackOpen') => 
+                () => this.setState({
+                  ...this.state, [which]: false
+                })}
+                enterPvtkSnackOpen={this.state.enterPvtkSnackOpen}
+                enteredPrivateKeySnackOpen={this.state.enteredPrivateKeySnackOpen}
+              />
+            </div>
+          </section>
+          <ToastContainer />
+          <Circles />
+        </main>
+        <NotAvailableOnMobile />
+      </>
     )
   }
 
