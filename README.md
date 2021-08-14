@@ -10,8 +10,6 @@ To test out the application visit [`https://sntsabode.github.io/tkngen`](https:/
 
 > <img src="./misc/sc.gif" alt=""/>
 
-<br/>
-
 ### Features
 
 * `ERC20` / `BEP20` Token Type
